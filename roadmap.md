@@ -6,7 +6,7 @@
 >
 > 负责人：walkzzz · 工程文档：`../AgentSkillsMBT-工程文档/`（23 份，里程碑真相源 Charter §4）· 本文件更新日期：2026-11-17
 >
-> **架构演进（2026-11-17）**：仓库形态 = **moon.work workspace + 6 分仓**（本仓 agentskills.mbt = 主 workspace：agentskills 单模块多包 + verify 成员；**GB/Z 185.1-185.7 协议栈独立仓 gbz185.mbt 先行开发**，10 包：wire/arch根包/identity/registry/capability/discovery/aip/tooling/transport-async/verify；4 基建库 bcrypt/bm25/pg/wasm3 独立仓）——详见工程文档 ARCH §2.1/§2.5（重叠钉扎 7 项决策）。
+> **架构演进（2026-11-17，2026-11-18 修订）**：仓库形态 = **moon.work workspace + 2 分仓**（本仓 agentskills.mbt = 主 workspace：agentskills 单模块多包 + verify 成员；**GB/Z 185.1-185.7 协议栈独立仓 gbz185.mbt 先行开发**，10 包：wire/arch根包/identity/registry/capability/discovery/aip/tooling/transport_async/verify；**原 4 基建库 bcrypt/bm25/pg/wasm3 全部撞车生态，撤销自研改依赖**——mooncakes 实测 bcrypt 5 实现/bm25≥5/pg 3/wasm 2，详见《依赖选型冒烟报告》）——详见工程文档 ARCH §2.1/§2.5（重叠钉扎 7 项决策）。
 
 ---
 
@@ -53,23 +53,23 @@
 ```text
 2026-11-23 开工 ──► M0 ──────► M1 ──────► M2 ──────► M3
                     12-04      2027-01-01  01-22      02-19
-                    选型+fixture  3/4 基建库  v0.1.0     v1.0.0
-                    骨架          过门禁发布   可演示版本   全量+大赛材料
+                    选型+fixture  三大能力面  v0.1.0     v1.0.0
+                    骨架          集成验证     可演示版本   全量+大赛材料
                     [⬜]         [⬜]       [⬜]       [⬜]
                         ▲ F17 核心已提前就位（aip 包）
 ```
 
 | 阶段 | 周 | 日期 | 内容 | 状态 |
 | --- | --- | --- | --- | --- |
-| P0a 依赖选型 | W1 | 11-23 ~ 11-27 | moonyaml/mcp 家族/maria/workflow/mizchi-llm/moonhnsw 冒烟 + 版本锁定 | ⬜ |
+| P0a 依赖选型 | W1 | 11-23 ~ 11-27 | moonyaml/mcp 家族/maria/workflow/mizchi-llm/moonhnsw 冒烟 + 版本锁定（**bcrypt/bm25/pg/wasm 替代依赖已提前冒烟锁定，2026-11-18**） | 🔶 |
 | P0b 行为锚定 | W2 | 11-30 ~ 12-04 | 上游 fixture ≥40 例 + 主工程骨架 + CI | ⬜ **M0** |
-| P1-1 口令库 | W3 | 12-07 ~ 12-11 | bcrypt.mbt（Blowfish/Eksblowfish + 口令哈希）→ 门禁发布 | ⬜ |
-| P1-2 检索库 | W4 | 12-14 ~ 12-18 | bm25.mbt（BM25 Okapi/F + RRF + 倒排）→ 门禁发布 | ⬜ |
-| P1-3 数据库 | W5-6 | 12-21 ~ 01-01 | pg.mbt（wire v3 + SCRAM + 池）→ 门禁发布 | ⬜ **M1** |
+| P1-1 认证集成 | W3 | 12-07 ~ 12-11 | moonbitlang/x bcrypt + mooncred 认证面集成验证 | ⬜ |
+| P1-2 检索集成 | W4 | 12-14 ~ 12-18 | MoonRetrieve（BM25/RRF）+ moonhnsw 检索面集成验证 | ⬜ |
+| P1-3 存储集成 | W5-6 | 12-21 ~ 01-01 | moonbit-community/postgres 存储面集成验证（真实 PG 联测） | ⬜ **M1** |
 | P2 纯核心 | W7 | 01-04 ~ 01-08 | skills 契约（declare）→ F01-F03 实现（四目标含 wasm-gc） | ⬜ |
 | P2 域包 | W8 | 01-11 ~ 01-15 | rag / security / storage(trait+内存+文件)（GB/Z 185 栈已拆分至独立仓 gbz185.mbt 先行开发） | ⬜ |
 | P2 桥接 | W9 | 01-18 ~ 01-22 | MCP 适配器 + 18 内置工具 + server + CLI → **v0.1.0** | ⬜ **M2** |
-| P3 沙箱 | W10 | 01-25 ~ 01-29 | wasm3.mbt（C 绑定 + ASan + 三平台）→ 门禁发布 | ⬜ |
+| P3 沙箱 | W10 | 01-25 ~ 01-29 | wasmoon 沙箱执行器集成验证（JIT+解释器+WASI） | ⬜ |
 | P3 集成 | W11 | 02-01 ~ 02-05 | 三执行器 + wasm-gc 组件通道(E2) + PG 接入 | ⬜ |
 | P4 互联 | W12 | 02-08 ~ 02-12 | **AIP 集成**（transport/MQ/mTLS/双协议互通）+ 国密(E8) + PQ(E9) + 结构化并发(E6) | 🔶 核心⬜→已就绪 |
 | P5 终验 | W13 | 02-15 ~ 02-19 | 对照矩阵 100% + 门禁终跑 → **v1.0.0** + 浏览器 demo(E1) + 大赛材料 | ⬜ **M3** |
@@ -100,15 +100,21 @@
 
 ---
 
-## 四、新建库路线（先建库、再组装；每库独立过 upstream-library-quality-gate）
+## 四、依赖路线（原新建库计划撤销——全部撞车生态，2026-11-18 决策）
 
-| 库 | 排期 | 内容 | 状态 |
+| 能力域 | 依赖（锁定版本） | 备选 | 冒烟状态 |
 | --- | --- | --- | --- |
-| walkzzz/bcrypt.mbt 0.1.0 | W3 | Blowfish/Eksblowfish + 口令哈希（OpenSSH 交叉验证） | ⬜ |
-| walkzzz/bm25.mbt 0.1.0 | W4 | BM25 Okapi/F + RRF + 倒排（rank_bm25 差分） | ⬜ |
-| walkzzz/pg.mbt 0.1.0 | W5-6 | PG wire v3 + SCRAM-SHA-256 + 连接池（真实 PG 联测） | ⬜ |
-| walkzzz/wasm3.mbt 0.1.0 | W10 | wasm3 C 绑定（ASan + 三平台）+ js 后端 | ⬜ |
+| 口令哈希 | moonbitlang/x@0.5.7（bcrypt 包） | moonbitstack/mooncrypt@0.5.2（交叉验证一致） | ✅ 编译+运行级互验 1/1（2026-11-18） |
+| 检索 | niuniu513-ask/MoonRetrieve@0.6.0 | NaIWaniubi/moonseek@0.17.5（平台级） | ✅ 编译通过 |
+| 数据库 | moonbit-community/postgres@0.1.3 | — | ✅ 编译通过（native-only） |
+| WASM 沙箱 | Milky2018/wasmoon@0.19.0 | moonbitlang/typst/wasmi | ✅ 编译通过（10 子模块） |
+| ~~walkzzz/bcrypt.mbt~~ | ~~自研撤销~~ | — | ❌ 生态 5 实现（含官方 x） |
+| ~~walkzzz/bm25.mbt~~ | ~~自研撤销~~ | — | ❌ 生态 ≥5 实现 |
+| ~~walkzzz/pg.mbt~~ | ~~自研撤销~~ | — | ❌ moonbit-community/postgres 2389 下载 |
+| ~~walkzzz/wasm3.mbt~~ | ~~自研撤销~~ | — | ❌ wasmoon 1851 下载全功能 |
 | walkzzz/agentskills.mbt | W9 / W13 | 主工程 v0.1.0 / v1.0.0 | 🔶 工程骨架与 aip 包已建 |
+
+集成纪律：主工程依赖每个生态包前跑冒烟项目回归（.tmp-smoke 保留）；MoonSearch@0.9.0 因自身编译错误出局（记录于冒烟报告）。
 
 ---
 
@@ -133,14 +139,12 @@
 
 | 发布物 | 日期 | 门禁 |
 | --- | --- | --- |
-| bcrypt.mbt 0.1.0 | 2026-12-11 | quality-gate 三步 PASS + dry-run 202 |
-| bm25.mbt 0.1.0 | 2026-12-18 | 同上 |
-| pg.mbt 0.1.0 | 2027-01-01 | 同上（M1） |
 | agentskills.mbt 0.1.0 | 2027-01-22 | W10 门禁首跑（M2） |
-| wasm3.mbt 0.1.0 | 2027-01-29 | ASan 零泄漏 + 三平台 |
 | agentskills.mbt 1.0.0 | 2027-02-19 | 门禁终跑 + 对照矩阵 100%（M3） |
 
-发布纪律：依赖序发布（bcrypt→bm25→pg→wasm3→主工程）+ 步间 `moon update`；dry-run 202/409 判版本占用；CHANGELOG ≠ 已发布（mooncakes docs 为事实源）；发布类命令由 walkzzz 亲自执行。
+（原 bcrypt/bm25/pg/wasm3 四条库发布行随自研计划撤销删除，2026-11-18。）
+
+发布纪律：依赖集成前冒烟回归 + 步间 `moon update`；dry-run 202/409 判版本占用；CHANGELOG ≠ 已发布（mooncakes docs 为事实源）；发布类命令由 walkzzz 亲自执行。
 
 ---
 
