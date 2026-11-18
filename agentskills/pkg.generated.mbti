@@ -1,0 +1,13 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt"
+
+// Values
+pub const VERSION : String = "0.1.0"
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

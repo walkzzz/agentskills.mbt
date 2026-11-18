@@ -1,0 +1,5 @@
+import {
+  "walkzzz/agentskills.mbt" @root,
+}
+
+pkgtype(kind: "executable")

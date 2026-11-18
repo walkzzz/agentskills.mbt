@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  MOONBIT_VERSION: 0.1.20261104
+
+jobs:
+  check:
+    name: moon check --deny-warn (4 targets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: moon check --deny-warn --target all
+        run: moon check --deny-warn --target all
+
+  contract:
+    name: .mbti contract drift check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: moon info
+        run: moon info
+      - name: Fail on .mbti drift
+        run: git diff --exit-code
+
+  prove:
+    name: moon prove (Why3 + Z3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: Install Z3
+        run: sudo apt-get update && sudo apt-get install -y z3
+      - name: moon prove
+        run: moon prove
+
+  test-native:
+    name: moon test --target native (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (unix, retry)
+        if: runner.os != 'Windows'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: Install MoonBit (windows, explicit zip, retry)
+        if: runner.os == 'Windows'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          shell: pwsh
+          command: |
+            Invoke-WebRequest -Uri "https://cli.moonbitlang.com/binaries/$env:MOONBIT_VERSION/moonbit-windows-x86_64.zip" -OutFile "$env:RUNNER_TEMP\moonbit.zip"
+            Expand-Archive -Path "$env:RUNNER_TEMP\moonbit.zip" -DestinationPath "$env:USERPROFILE\.moon" -Force
+            Add-Content $env:GITHUB_PATH "$env:USERPROFILE\.moon\bin"
+            & "$env:USERPROFILE\.moon\bin\moon.exe" update
+      - name: moon test --target native
+        run: moon test --target native
+
+  test-portable:
+    name: moon test --target ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [js, wasm, wasm-gc]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: moon test --target ${{ matrix.target }}
+        run: moon test --target ${{ matrix.target }}

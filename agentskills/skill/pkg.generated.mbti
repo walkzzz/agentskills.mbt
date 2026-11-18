@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/skill"
+
+// Values
+pub fn validate(SkillManifest) -> Result[Unit, String]
+
+// Errors
+
+// Types and methods
+pub(all) struct SkillManifest {
+  name : String
+  description : String
+  license : String?
+  compatibility : Array[String]?
+  metadata : Map[String, String]?
+}
+
+// Type aliases
+
+// Traits
