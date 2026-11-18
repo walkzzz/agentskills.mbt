@@ -1,4 +1,4 @@
-# agentskills.mbt · skills-aip 测试报告（CRAP / 变异 / 属性 / 白盒 / 黑盒）
+# agentskills.mbt · GB/Z 185 AIP 测试报告（CRAP / 变异 / 属性 / 白盒 / 黑盒）
 
 > 日期：2026-11-17 · 负责人：walkzzz · 范围：`aip/` 包（GB/Z 185.6 AIP sans-I/O 核心）
 > 测试手段：黑盒 / 白盒 / 属性（quickcheck）/ 可执行不变量（形式化投影）/ Fake Transport / CRAP / 变异测试 / 本地 LLM 夹具（登记）
@@ -80,5 +80,5 @@ ModelScope Qwen2.5-0.5B-Instruct GGUF（Q4_K_M，469MB）已登记于 `test-fixt
 ## 7. 结论
 
 - 26/26 测试全绿；四目标 `moon check --deny-warn --target all` 零警告；.mbti 契约已生成。
-- 覆盖率 93.1%，全函数 CRAP < 10，变异击杀率 100%——**skills-aip 核心达到可发布质量基线**。
+- 覆盖率 93.1%，全函数 CRAP < 10，变异击杀率 100%——**GB/Z 185 AIP 核心（gbz185/aip 包）达到可发布质量基线**。
 - 待办：SMT solver 安装（形式化深化）、W12 transport/MQ/mTLS 集成、55 行防御分支按需补测。

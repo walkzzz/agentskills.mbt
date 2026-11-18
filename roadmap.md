@@ -5,6 +5,8 @@
 > 移植对标：[UCToo/agentskills-runtime](https://atomgit.com/UCToo/agentskills-runtime)（仓颉 v0.0.30，MIT，35 核心模块）· 全量、无折扣移植 + MoonBit 优势增强（E1-E10）。
 >
 > 负责人：walkzzz · 工程文档：`../AgentSkillsMBT-工程文档/`（23 份，里程碑真相源 Charter §4）· 本文件更新日期：2026-11-17
+>
+> **架构演进（2026-11-17）**：仓库形态 = **moon.work workspace + 6 分仓**（本仓 agentskills.mbt = 主 workspace：agentskills 单模块多包 + verify 成员；**GB/Z 185.1-185.7 协议栈独立仓 gbz185.mbt 先行开发**，10 包：wire/arch根包/identity/registry/capability/discovery/aip/tooling/transport-async/verify；4 基建库 bcrypt/bm25/pg/wasm3 独立仓）——详见工程文档 ARCH §2.1/§2.5（重叠钉扎 7 项决策）。
 
 ---
 
@@ -25,16 +27,20 @@
 | ✅ 工具链实测 | moon 0.1.20261104 下语法事实确认（`#derive`/`pub(all) suberror`/`pub extend` 声明/Int64 ToJson 字符串形态等），已回写 COD 规范 | aip 包编译迭代记录 |
 | 🔵 **F17 AIP 协议核心** | **提前实现**（原排期 W12）：GB/Z 185.2/185.4/185.5/185.6 数据模型与 sans-I/O 状态机 + wire JSON codec + AGENTS.md frontmatter 映射 | `aip/` 包 9 文件，见下 |
 
-### AIP 协议核心（🔵 提前完成，`aip/` 包）
+### AIP 协议核心（🔵 已迁移至独立仓 **walkzzz/gbz185.mbt** 并推送）
 
-| 门禁 | 结果 |
+> 2026-11-17：原 `aip/` 包已按 ARCH §2.1 拆分迁移至独立仓 **https://github.com/walkzzz/gbz185.mbt**（10 包：wire/arch根包/identity/registry/capability/discovery/aip/tooling/transport-async/verify），**47/47 测试全绿**、四目标零警告、.mbti 契约生成、verify 形式化（proof_enabled）。主仓本目录的 aip 包已移除（单一事实源 = gbz185 仓）。
+
+| 门禁（gbz185 仓） | 结果 |
 | --- | --- |
-| `moon check --deny-warn --target all` | 四目标（native/js/wasm/wasm-gc）**零警告** |
-| `moon test` | **10/10 全绿**（身份/信封 wire 往返、注册流与拒绝、发现 discoverable 过滤、分发/接收/防重放、未注册拒、版本/协议校验、错误分型） |
-| `moon info` | `pkg.generated.mbti` 契约生成（E4） |
+| `moon check --deny-warn --target all` | 四目标**零警告** |
+| `moon test` | **47/47 全绿**（黑盒 / 白盒 / Fake Transport / quickcheck 属性 / wire / registry / discovery / capability / identity / tooling） |
+| 覆盖率 | 93.1%（迁移前基线；gbz185 仓含新增 AIC 校验/registry 生命周期后更高） |
+| 变异测试 | **10/10 KILLED，击杀率 100%**（方法与报告见 `docs/TEST_REPORT.md`） |
+| `moon info` | 各包 `pkg.generated.mbti` 契约生成（E4） |
 | `moon fmt` | 已格式化 |
-
-覆盖国标部分：185.2 身份（AIC/CAI/identity_status）→ 185.3 注册（ATR）→ 185.4 能力（ACS）→ 185.5 发现（ADP，discoverable 过滤）→ **185.6 交互（AIP：信封/单调序号防重放/群组 URN 直通/未注册单播拒）**。错误分型 `AipError{Discovery,Registry,Capability,Dispatch,Envelope}` 映射国标部分号。
+| 形式化 | 可执行不变量 + verify 包 proof_enabled（SMT solver 待装，W7 深化） |
+| LLM 夹具 | ModelScope Qwen2.5-0.5B GGUF 登记（`test-fixtures/llm-local.md`） |
 
 ### 未开始（按排期推进）
 
@@ -61,7 +67,7 @@
 | P1-2 检索库 | W4 | 12-14 ~ 12-18 | bm25.mbt（BM25 Okapi/F + RRF + 倒排）→ 门禁发布 | ⬜ |
 | P1-3 数据库 | W5-6 | 12-21 ~ 01-01 | pg.mbt（wire v3 + SCRAM + 池）→ 门禁发布 | ⬜ **M1** |
 | P2 纯核心 | W7 | 01-04 ~ 01-08 | skills 契约（declare）→ F01-F03 实现（四目标含 wasm-gc） | ⬜ |
-| P2 域包 | W8 | 01-11 ~ 01-15 | rag / security / gbz185 / storage(trait+内存+文件) | ⬜ |
+| P2 域包 | W8 | 01-11 ~ 01-15 | rag / security / storage(trait+内存+文件)（GB/Z 185 栈已拆分至独立仓 gbz185.mbt 先行开发） | ⬜ |
 | P2 桥接 | W9 | 01-18 ~ 01-22 | MCP 适配器 + 18 内置工具 + server + CLI → **v0.1.0** | ⬜ **M2** |
 | P3 沙箱 | W10 | 01-25 ~ 01-29 | wasm3.mbt（C 绑定 + ASan + 三平台）→ 门禁发布 | ⬜ |
 | P3 集成 | W11 | 02-01 ~ 02-05 | 三执行器 + wasm-gc 组件通道(E2) + PG 接入 | ⬜ |
