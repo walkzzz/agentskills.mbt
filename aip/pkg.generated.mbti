@@ -11,6 +11,8 @@ pub fn envelope_version() -> String
 
 pub fn protocol_name() -> String
 
+pub fn send_direct(AipProtocol, AipProtocol, MessageKind, @json.Json) -> AipMessage raise AipError
+
 // Errors
 pub(all) suberror AipError {
   Discovery(String)
@@ -111,6 +113,7 @@ pub fn AipProtocol::dispatch(Self, MessageKind, String, @json.Json) -> AipEnvelo
 pub fn AipProtocol::handle_discover_response(Self, DiscoverResponse) -> Int32
 pub fn AipProtocol::handle_register_response(Self, RegisterResponse) -> Unit raise AipError
 pub fn AipProtocol::identity(Self) -> AgentIdentity
+pub fn AipProtocol::invariant(Self) -> Bool
 pub fn AipProtocol::new(AgentNode) -> Self
 pub fn AipProtocol::peer(Self, String) -> AgentNode?
 pub fn AipProtocol::peer_count(Self) -> Int32

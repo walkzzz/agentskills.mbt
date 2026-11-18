@@ -1,0 +1,165 @@
+---
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs" @fs,
+  "moonbitlang/async/process" @proc,
+}
+---
+
+// AIP 包变异测试（scripts/mutation_test.mbtx）
+// 运行：moon run scripts/mutation_test.mbtx
+// 对每个变异：生成变异源文件 → moon test → 判定 KILLED/SURVIVED → 恢复 → 汇总报告
+
+///|
+struct Mutation {
+  id : String
+  file : String
+  old_sub : String
+  new_sub : String
+  desc : String
+}
+
+///|
+let mutations : Array[Mutation] = [
+  {
+    id: "M01",
+    file: "aip/protocol.mbt",
+    old_sub: "self.outbox_seq += 1L",
+    new_sub: "self.outbox_seq += 2L",
+    desc: "outbox step doubled",
+  },
+  {
+    id: "M02",
+    file: "aip/protocol.mbt",
+    old_sub: "guard env.seq > last else {",
+    new_sub: "guard env.seq >= last else {",
+    desc: "replay seq comparison loosened",
+  },
+  {
+    id: "M03",
+    file: "aip/protocol.mbt",
+    old_sub: "recipient_urn.has_prefix(\"urn:agent:group:\")",
+    new_sub: "recipient_urn.has_prefix(\"urn:agent:grp:\")",
+    desc: "group URN prefix mutated",
+  },
+  {
+    id: "M04",
+    file: "aip/protocol.mbt",
+    old_sub: "guard resp.accepted else {",
+    new_sub: "guard !resp.accepted else {",
+    desc: "register acceptance negated",
+  },
+  {
+    id: "M05",
+    file: "aip/protocol.mbt",
+    old_sub: "guard env.recipient_urn == self.self_node.urn else {",
+    new_sub: "guard env.recipient_urn != self.self_node.urn else {",
+    desc: "recipient check negated",
+  },
+  {
+    id: "M06",
+    file: "aip/protocol.mbt",
+    old_sub: "guard env.sender_urn != self.self_node.urn else {",
+    new_sub: "guard env.sender_urn == self.self_node.urn else {",
+    desc: "self-loop check negated",
+  },
+  {
+    id: "M07",
+    file: "aip/identity.mbt",
+    old_sub: "NoIdentity => \"none\"",
+    new_sub: "NoIdentity => \"noneX\"",
+    desc: "identity wire value mutated",
+  },
+  {
+    id: "M08",
+    file: "aip/codec.mbt",
+    old_sub: "None => []",
+    new_sub: "None => raise Envelope(\"mutated\")",
+    desc: "missing-key default tightened",
+  },
+  {
+    id: "M09",
+    file: "aip/envelope.mbt",
+    old_sub: "\"event\" => Some(Event)",
+    new_sub: "\"event\" => Some(TaskRequest)",
+    desc: "kind constructor swapped",
+  },
+  {
+    id: "M10",
+    file: "aip/codec.mbt",
+    old_sub: "guard p == protocol_name() else {",
+    new_sub: "guard p != protocol_name() else {",
+    desc: "protocol check negated",
+  },
+]
+
+///|
+fn replace_all(s : String, old : String, new : String) -> String {
+  let parts = s.split(old)
+  if parts.length() == 1 {
+    return s
+  }
+  let buf = StringBuilder()
+  for i, p in parts {
+    buf.write_string(p.to_string())
+    if i < parts.length() - 1 {
+      buf.write_string(new)
+    }
+  }
+  buf.to_string()
+}
+
+///|
+async fn run_tests() -> Int raise {
+  let (code, _out, _err) = @proc.collect_output("moon", ["test"], cwd=".") catch {
+    _ => panic()
+  }
+  code
+}
+
+///|
+async fn main raise {
+  let files = [
+    "aip/protocol.mbt", "aip/identity.mbt", "aip/codec.mbt", "aip/envelope.mbt",
+  ]
+  let sources : Map[String, String] = Map([])
+  for f in files {
+    let content = @fs.read_file(f).text() catch { _ => panic() }
+    sources[f] = content
+  }
+  let mut killed = 0
+  let mut compile_blocked = 0
+  let mut survived = 0
+  let results : Array[String] = []
+  for m in mutations {
+    let original = sources.get(m.file).unwrap_or("")
+    let mutated = replace_all(original, m.old_sub, m.new_sub)
+    if mutated == original {
+      results.push("\{m.id}: NOT-APPLIED (pattern not found: \{m.old_sub})")
+      continue
+    }
+    @fs.write_file(m.file, mutated)
+    let code = run_tests()
+    if code == 0 {
+      survived += 1
+      results.push("\{m.id}: SURVIVED — \{m.desc}")
+    } else {
+      killed += 1
+      results.push("\{m.id}: KILLED — \{m.desc}")
+    }
+    @fs.write_file(m.file, original)
+  }
+  let final_code = run_tests()
+  for r in results {
+    println(r)
+  }
+  println("=== mutation summary ===")
+  println(
+    "killed=\{killed} survived=\{survived} total=\{mutations.length()} (compile failures count as killed)",
+  )
+  if final_code == 0 {
+    println("baseline restored: tests green")
+  } else {
+    println("WARNING: baseline tests failing after restore — manual check needed")
+  }
+}

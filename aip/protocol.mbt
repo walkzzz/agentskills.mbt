@@ -192,3 +192,11 @@ pub fn AipProtocol::receive(
     payload: env.payload,
   }
 }
+
+/// 可执行不变量（形式化性质的可执行投影）：身份 URN 合法、发送序号非负。
+/// Why3 形式化证明（moon prove）于 W7 深化；当前由测试断言保持。
+
+///|
+pub fn AipProtocol::invariant(self : AipProtocol) -> Bool {
+  self.outbox_seq >= 0L && self.self_node.urn.has_prefix("urn:agent:")
+}
