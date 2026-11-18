@@ -4,9 +4,22 @@ package "walkzzz/agentskills-verify/verify"
 // Values
 pub const FIXTURE_TARGET : Int32 = 40
 
+pub let fixtures : Array[Fixture]
+
+pub fn guard_known(String) -> Bool
+
+pub let known_failures : Array[String]
+
 // Errors
 
 // Types and methods
+pub(all) struct Fixture {
+  id : String
+  skill_md : String
+  expect_name : String
+  expect_description : String
+  expect_license : String?
+}
 
 // Type aliases
 
