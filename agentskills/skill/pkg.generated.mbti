@@ -2,11 +2,19 @@
 package "walkzzz/agentskills.mbt/skill"
 
 // Values
+pub fn parse_skill_md(String) -> Result[(SkillManifest, String), String]
+
 pub fn validate(SkillManifest) -> Result[Unit, String]
 
 // Errors
 
 // Types and methods
+#derive(Eq)
+pub(all) enum LoadLevel {
+  Metadata
+  FullyLoaded
+}
+
 pub(all) struct SkillManifest {
   name : String
   description : String
@@ -14,6 +22,14 @@ pub(all) struct SkillManifest {
   compatibility : Array[String]?
   metadata : Map[String, String]?
 }
+
+pub(all) struct SkillRegistry {
+  entries : Map[String, (SkillManifest, LoadLevel)]
+}
+pub fn SkillRegistry::count(Self) -> Int32
+pub fn SkillRegistry::lookup(Self, String) -> (SkillManifest, LoadLevel)?
+pub fn SkillRegistry::new() -> Self
+pub fn SkillRegistry::register(Self, SkillManifest, LoadLevel) -> Result[Unit, String]
 
 // Type aliases
 

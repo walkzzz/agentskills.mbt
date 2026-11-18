@@ -81,8 +81,8 @@
 | 功能 | 描述 | 版本 | 状态 |
 | --- | --- | --- | --- |
 | F17 | AIP 智能体互联协议适配层（GB/Z 185.6） | 1.0.0 | 🔶 sans-I/O 核心与模型已就绪；transport/MQ/mTLS/互通 ⬜ |
-| F01 | SKILL.md 解析与校验 | 0.1.0 | ⬜ |
-| F02 | 技能注册表与渐进加载 | 0.1.0 | ⬜ |
+| F01 | SKILL.md 解析与校验 | 0.1.0 | 🔶 parse_skill_md 落地（frontmatter 提取+moonyaml+validate，4 测试含差分层起步）；YAML 全语法面与文件系统读随 async 接入 ⬜ |
+| F02 | 技能注册表与渐进加载 | 0.1.0 | 🔶 SkillRegistry Kernel 式纯函数域落地（register/lookup/count + LoadLevel 状态机，同名冲突 fail-fast）；文件加载 ⬜ |
 | F03 | 技能→工具适配器（MCP 面） | 0.1.0 | ⬜ |
 | F04 | RAG 混合检索（BM25+RRF+HNSW） | 0.1.0 核心 | ⬜ |
 | F05 | compactor 上下文压缩 | 1.0.0 | ⬜ |
