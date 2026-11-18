@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/tooling_bridge"
+
+import {
+  "moonbitlang/core/json",
+  "walkzzz/gbz185.mbt/tooling",
+}
+
+// Values
+pub fn[T : SkillTool] register_skill_tool(@tooling.ToolRegistry, T) -> Unit raise @tooling.ToolingError
+
+pub fn[T : SkillTool] to_descriptor(T) -> @tooling.ToolDescriptor
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+pub(open) trait SkillTool {
+  fn tool_name(Self) -> String
+  fn tool_description(Self) -> String
+  fn tool_input_schema(Self) -> @json.Json
+  fn execute(Self, @json.Json) -> @json.Json
+}
