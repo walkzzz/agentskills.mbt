@@ -39,7 +39,7 @@
 | 变异测试 | **10/10 KILLED，击杀率 100%**（方法与报告见 `docs/TEST_REPORT.md`） |
 | `moon info` | 各包 `pkg.generated.mbti` 契约生成（E4） |
 | `moon fmt` | 已格式化 |
-| 形式化 | 可执行不变量 + verify 包 proof_enabled（SMT solver 待装，W7 深化） |
+| 形式化 | 可执行不变量 + **moon prove 形式化证明完成：2 goals proved**（clamp_i64 + next_seq 严格递增，WSL Ubuntu + Z3 4.8.12；next_seq 已接入 dispatch 真实调用） |
 | LLM 夹具 | ModelScope Qwen2.5-0.5B GGUF 登记（`test-fixtures/llm-local.md`） |
 
 ### 未开始（按排期推进）
