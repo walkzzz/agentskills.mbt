@@ -14,6 +14,8 @@
 
 **简体中文（默认）** · [English](#english)
 
+🌐 **项目主页（GitHub Pages）**：[walkzzz.github.io/agentskills.mbt](https://walkzzz.github.io/agentskills.mbt/)
+
 **目录**：[特性一览](#特性一览) · [快速开始](#快速开始) · [WebAssembly 组件](#webassembly-组件component-model--推广展示) · [双智能体互联演示](#双智能体互联演示国标全流程) · [质量与验证](#质量与验证) · [能力与边界](#能力与边界) · [文档](#文档) · [许可证](#许可证)
 
 ---
