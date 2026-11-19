@@ -1,3 +1,7 @@
 import {
   "moonbitstack/moonyaml" @yaml,
 }
+
+import {
+  "moonbitlang/core/quickcheck",
+} for "test"

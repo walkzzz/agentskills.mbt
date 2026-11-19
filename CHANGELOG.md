@@ -29,5 +29,5 @@
 
 ### Verified
 
-- `moon check --deny-warn` 干净；`moon test` 11/11（native，2026-11-19）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 14/14 KILLED（击杀率 100%，scripts/mutation_test.mbtx）**。
+- `moon check --deny-warn` 干净；`moon test` 15/15（native，2026-11-19，含 4 个 quickcheck 属性：validate 边界接受/越界拒绝/parse 往返/注册冲突）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 14/14 KILLED（击杀率 100%，scripts/mutation_test.mbtx）**。
 - 依赖：`walkzzz/gbz185.mbt@0.1.0`（mooncakes 已发布，国标协议栈 13 verified functions / 20 obligations machine-proved）。

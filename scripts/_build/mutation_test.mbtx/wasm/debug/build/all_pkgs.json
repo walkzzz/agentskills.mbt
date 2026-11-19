@@ -282,8 +282,18 @@
     },
     {
       "root": "moonbitlang/core",
+      "rel": "async/internal/pipe",
+      "artifact": "C:\\Users\\Administrator\\.moon\\lib\\core\\_build\\wasm\\release\\bundle\\async\\internal\\pipe\\pipe.mi"
+    },
+    {
+      "root": "moonbitlang/core",
       "rel": "async/internal/test_util",
       "artifact": "C:\\Users\\Administrator\\.moon\\lib\\core\\_build\\wasm\\release\\bundle\\async\\internal\\test_util\\test_util.mi"
+    },
+    {
+      "root": "moonbitlang/core",
+      "rel": "async/internal/tls_util",
+      "artifact": "C:\\Users\\Administrator\\.moon\\lib\\core\\_build\\wasm\\release\\bundle\\async\\internal\\tls_util\\tls_util.mi"
     },
     {
       "root": "moonbitlang/core",
@@ -299,11 +309,6 @@
       "root": "moonbitlang/core",
       "rel": "async/os_error",
       "artifact": "C:\\Users\\Administrator\\.moon\\lib\\core\\_build\\wasm\\release\\bundle\\async\\os_error\\os_error.mi"
-    },
-    {
-      "root": "moonbitlang/core",
-      "rel": "async/pipe",
-      "artifact": "C:\\Users\\Administrator\\.moon\\lib\\core\\_build\\wasm\\release\\bundle\\async\\pipe\\pipe.mi"
     },
     {
       "root": "moonbitlang/core",
