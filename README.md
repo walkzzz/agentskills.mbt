@@ -16,7 +16,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 
 | 成员 | 内容 |
 | --- | --- |
-| **agentskills**（主模块） | **F01** SKILL.md 解析（moonyaml frontmatter→SkillManifest+validate）→ **F02** SkillRegistry（渐进加载状态机，Kernel 式纯函数域）→ **F03** tooling_bridge（SkillTool trait→GB/Z 185.7 ToolDescriptor 单源映射）→ CLI |
+| **agentskills**（主模块） | **F01** SKILL.md 解析（moonyaml→SkillManifest+validate）· **F02** SkillRegistry（渐进加载状态机，Kernel 式纯函数域）· **F03** tooling_bridge（GB/Z 185.7 单源映射）· **F04** RAG（BM25+RRF）· **F05** compactor（Unicode 安全截断）· **F06** RBAC（三级敏感+审计）· **F07** 认证（bcrypt+HS256 JWT）· **F08** 存储（内存+JSONL+async IO）· **F09** 沙箱 API（GasMeter）· **F14** 服务端 API（Router+SSE）· **F15** CLI |
 | **verify** | fixture 资产 + **差分层**：known_failure 隔离机制（与上游语义分歧登记即跳过，修复后断言自动生效）+ 冻结期望差分测试 |
 | **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)**（独立仓，已发布 mooncakes） | GB/Z 185-2026《人工智能 智能体互联》协议栈全 7 部分 + 形式化验证（moon prove 3 goals proved） |
 

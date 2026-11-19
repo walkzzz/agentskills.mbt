@@ -21,6 +21,7 @@
 - **F05 compactor 上下文压缩**：`compactor` 包——确定性裁剪（system 全保留 + 最近 N 条 + 计数占位）+ `fit_budget` 单消息预算 + **Unicode 安全截断（E7：按 codepoint，绝不劈开多字节字符）**。
 - **F08 存储抽象（核心）**：`storage` 包——`Storage` pub(open) trait（get/put/delete/all_keys/count）+ `MemoryStorage` 内存实现（四目标）+ `extend` 方法提升；JSONL/PostgreSQL 后端随 native 集成。
 - **F08 存储后端（JSONL 编解码核）**：`jsonl.mbt`——`encode_line`/`parse_line`（引号/反斜杠/换行/制表/回车转义对称，中文/emoji 往返）+ `encode_all`/`parse_all`（空行/坏行容错）；文件 IO wrapper 随 native @fs 集成。
+- **F08 存储 IO wrapper**：`jsonl_io.mbt`——async `save_jsonl`/`load_jsonl`（薄 IO 层复用已测编解码核，@fs 整文件读写）；`examples/storage_jsonl_demo` 运行级验证往返 OK；async 依赖接入后 native 37/37 保持全绿。
 - **F09 沙箱 API 面**：`sandbox` 包——`Sandbox` pub(open) trait（模块字节+入口+参数+燃料 → 分型结果）+ `GasMeter` 燃料计量（限额/消耗/耗尽/负额拒绝，纯逻辑）+ `StubSandbox` 确定性桩（空模块/零燃料/缺入口全分型）；wasmoon 运行时注入随 W10。
 - **F14 服务端 API 面**：`server` 包——HTTP 契约（HttpRequest/HttpResponse + ok/404/405）+ `Router` 分发核（精确/前缀匹配，路径命中方法不符 → 405）+ **SSE 事件编码核**（多行 data 逐行前缀）；HTTPS 传输（@async socket+TLS）与 WebMCP 描述面随 native 集成。
 - `docs/known-gaps.md` 真话台账（6 条 GAP 如实登记）。

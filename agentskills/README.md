@@ -21,6 +21,9 @@ moon update
 | `rbac` | **F06** 三级敏感 × 三角色授权矩阵（`can_access` 纯函数）+ `Auditor` 单调审计日志 |
 | `compactor` | **F05** 上下文压缩——确定性裁剪 + 单消息预算 + **Unicode 安全截断（按 codepoint）** |
 | `tooling_bridge` | **F03** 技能工具桥接——`SkillTool` 契约 → GB/Z 185.7 `ToolDescriptor` 单源映射 → gbz185 `ToolRegistry` |
+| `storage` | **F08** 存储抽象——`Storage` trait + `MemoryStorage`（四目标）+ JSONL 编解码核 + async 文件 IO wrapper |
+| `sandbox` | **F09** 沙箱 API 面——`Sandbox` trait + `GasMeter` 燃料计量（限额/耗尽/负额拒绝） |
+| `server` | **F14** 服务端 API 面——HTTP 契约 + `Router` 分发核（精确/前缀，方法不符 405）+ SSE 事件编码 |
 
 ## 质量
 

@@ -15,4 +15,5 @@ import {
   "moonbitlang/x@0.5.7",
   "moonbitstack/mooncred@0.8.1",
   "moonbitstack/mooncrypt@0.5.2",
+  "moonbitlang/async@0.22.9",
 }

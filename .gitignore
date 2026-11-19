@@ -3,3 +3,4 @@
 /.mooncakes/
 *.mutated
 .mutation-backup/
+*.tmp

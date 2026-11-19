@@ -1,0 +1,6 @@
+import {
+  "moonbitlang/async",
+  "walkzzz/agentskills.mbt/storage",
+}
+
+pkgtype(kind: "executable")
