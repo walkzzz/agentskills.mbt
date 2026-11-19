@@ -1,7 +1,7 @@
 import {
   "moonbit-community/postgres/client" @pgclient,
-  "moonbit-community/postgres/pgpool" @pgpool,
-  "moonbitlang/async" @async,
+  "moonbit-community/postgres/pgpool",
+  "moonbitlang/async",
 }
 
 supported_targets = "native"

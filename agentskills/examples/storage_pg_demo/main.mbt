@@ -20,7 +20,7 @@ fn show_opt(o : String?) -> String {
 }
 
 ///|
-async fn main raise {
+async fn main {
   let host = env_or("PG_HOST", "127.0.0.1")
   let user = env_or("PG_USER", "postgres")
   let dbname = env_or("PG_DB", "postgres")
@@ -31,32 +31,32 @@ async fn main raise {
       return
     }
   }
-  @storage_pg.with_pg_storage(
-    host~, user~, password~, dbname~,
-    async fn(pool) {
-      @storage_pg.kv_clear(pool)
-      @storage_pg.kv_put(pool, "skill/demo", "{\"name\":\"demo\"}")
-      @storage_pg.kv_put(pool, "skill/中文", "多行\n值\t制表")
-      let v1 = @storage_pg.kv_get(pool, "skill/demo")
-      let cnt1 = @storage_pg.kv_count_text(pool)
-      println("put/get: " + show_opt(v1))
-      println("count after 2 puts: " + show_opt(cnt1))
-      // 覆盖写
-      @storage_pg.kv_put(pool, "skill/demo", "{\"name\":\"demo2\"}")
-      let v2 = @storage_pg.kv_get(pool, "skill/demo")
-      println("overwrite: " + show_opt(v2))
-      // 中文键往返
-      let vc = @storage_pg.kv_get(pool, "skill/中文")
-      println("cjk roundtrip: " + show_opt(vc))
-      // 删除
-      let del = @storage_pg.kv_delete(pool, "skill/demo")
-      println("delete exists: " + (if del { "true" } else { "false" }))
-      println("delete again: " + (if @storage_pg.kv_delete(pool, "skill/demo") { "true" } else { "false" }))
-      let after = @storage_pg.kv_get(pool, "skill/demo")
-      println("get after delete: " + show_opt(after))
-      @storage_pg.kv_clear(pool)
-      println("clear: done")
-    },
-  )
+  @storage_pg.with_pg_storage(host~, user~, password~, dbname~, async fn(pool) {
+    @storage_pg.kv_clear(pool)
+    @storage_pg.kv_put(pool, "skill/demo", "{\"name\":\"demo\"}")
+    @storage_pg.kv_put(pool, "skill/中文", "多行\n值\t制表")
+    let v1 = @storage_pg.kv_get(pool, "skill/demo")
+    let cnt1 = @storage_pg.kv_count_text(pool)
+    println("put/get: " + show_opt(v1))
+    println("count after 2 puts: " + show_opt(cnt1))
+    // 覆盖写
+    @storage_pg.kv_put(pool, "skill/demo", "{\"name\":\"demo2\"}")
+    let v2 = @storage_pg.kv_get(pool, "skill/demo")
+    println("overwrite: " + show_opt(v2))
+    // 中文键往返
+    let vc = @storage_pg.kv_get(pool, "skill/中文")
+    println("cjk roundtrip: " + show_opt(vc))
+    // 删除
+    let del = @storage_pg.kv_delete(pool, "skill/demo")
+    println("delete exists: " + (if del { "true" } else { "false" }))
+    println(
+      "delete again: " +
+      (if @storage_pg.kv_delete(pool, "skill/demo") { "true" } else { "false" }),
+    )
+    let after = @storage_pg.kv_get(pool, "skill/demo")
+    println("get after delete: " + show_opt(after))
+    @storage_pg.kv_clear(pool)
+    println("clear: done")
+  })
   println("PG DEMO OK")
 }

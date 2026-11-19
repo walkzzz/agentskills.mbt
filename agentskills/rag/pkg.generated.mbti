@@ -19,10 +19,14 @@ pub fn RagIndex::count(Self) -> Int32
 pub fn RagIndex::new() -> Self
 pub fn RagIndex::search(Self, String, top_k? : Int32) -> Array[@MoonRetrieve.SearchResult]
 
+#derive(Eq)
 pub(all) struct RankedHit {
   doc_id : String
   score : Double
 }
+pub fn RankedHit::compare(Self, Self) -> Int32
+pub fn RankedHit::equal(Self, Self) -> Bool
+pub fn RankedHit::not_equal(Self, Self) -> Bool
 
 // Type aliases
 

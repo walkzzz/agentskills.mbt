@@ -26,6 +26,7 @@ pub(all) struct SkillManifest {
   compatibility : Array[String]?
   metadata : Map[String, @json.Json]?
 }
+pub fn SkillManifest::parse(String) -> Result[(Self, String), String]
 
 pub(all) struct SkillRegistry {
   entries : Map[String, (SkillManifest, LoadLevel)]

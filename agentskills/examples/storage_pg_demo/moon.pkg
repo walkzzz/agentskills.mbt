@@ -1,7 +1,7 @@
 import {
   "moonbitlang/async",
-  "moonbitlang/core/env" @env,
-  "walkzzz/agentskills.mbt/storage_pg" @storage_pg,
+  "moonbitlang/core/env",
+  "walkzzz/agentskills.mbt/storage_pg",
 }
 
 supported_targets = "native"
