@@ -39,6 +39,17 @@
 | M21–M22 | **storage**（put no-op、delete 恒真） |
 | M23–M24 | **rag**（RRF 非倒数、索引 no-op） |
 
+## 沙箱执行器覆盖（F09）
+
+| 执行器 | 目标 | 状态 |
+| --- | --- | --- |
+| `StubSandbox`（契约桩） | 四目标 | ✅ 全分型（空模块/零燃料/缺入口）契约测试 |
+| `WasmJsSandbox`（执行器①） | js | ✅ **echo(42)=42 实测**（extern "js" 同步 Module/Instance + 全局句柄表 + JSON 参数桥；无效字节/缺导出/燃料耗尽分型）；js 目标 46/46 |
+| @process 进程隔离（②） | native | ⬜ |
+| wasmoon JIT（③） | native | ⬜（编译器级依赖链 wasmoon/milkir/wasmoon_jit/wasm_milkir，W10） |
+
+诚实边界：js 执行器**不逐指令计量燃料**（WebAssembly 无 gas 钩子）——gas ≤ 0 判 OutOfGas；精确计量归 wasmoon 执行器。
+
 ## 运行级验证
 
 - `examples/interconnect_demo`：双智能体互连五环节（ATR 注册→ADP 发现→单播→群组扇出→变异信封拒收→不变量）OK

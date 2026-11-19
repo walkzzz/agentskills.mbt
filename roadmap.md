@@ -89,7 +89,7 @@
 | F06 | RBAC 三级敏感 + 审计 | 0.1.0 | 🔶 `rbac` 包落地：三级敏感 × 三角色授权矩阵 `can_access`（纯函数）+ `Auditor` 单调审计日志（2 测试 13 断言）；高危二次确认随运行时壳 ⬜ |
 | F07 | 认证（JWT+口令） | 0.1.0 | 🔶 口令面（`auth` bcrypt 封装，委托官方 moonbitlang/x）+ **JWT 面（HS256 签发/校验，mooncred 0.8.1 + mooncrypt HMAC，Clock 纯值注入）**；4 测试往返/盐差异/签发校验/篡改拒收 |
 | F08 | 存储抽象（内存/文件/PG） | 0.1.0/1.0.0 | 🔶 `storage` 包：Storage pub(open) trait + MemoryStorage（四目标）+ JSONL 编解码核 + **IO wrapper（async save/load，demo 往返 OK）**；PostgreSQL（moonbit-community/postgres）⬜ |
-| F09 | WASM 沙箱三执行器 | 1.0.0 | 🔶 API 面落地：`Sandbox` pub(open) trait + `GasMeter` 燃料计量 + `StubSandbox` 全分型桩；**侦察结论（2026-11-19）：wasmoon 完整集成=编译器级依赖链（wasmoon/milkir/wasmoon_jit/wasm_milkir 四模块）**——三执行器推进序：①js WebAssembly 零依赖优先 ②@process 进程隔离 ③wasmoon JIT 随 W10 专门窗口 |
+| F09 | WASM 沙箱三执行器 | 1.0.0 | 🔶 **执行器① js WebAssembly ✅**（`sandbox_js` 包 js-only：extern "js" 同步 Module/Instance + 全局句柄表 + JSON 参数桥；echo(42)=42 实测，js 目标 46/46）；API 面（Sandbox trait + GasMeter + StubSandbox）✓；wasmoon 集成=编译器级链（四模块，W10）；②@process 进程隔离 ⬜ |
 | F10 | MoonBit 技能 wasm-gc 组件通道 [E2] | 1.0.0 | ⬜ |
 | F11 | GB/Z 185 本地模式 | 0.1.0 | ⬜ |
 | F12 | GB/Z 185 互联模式 | 1.0.0 | ⬜ |

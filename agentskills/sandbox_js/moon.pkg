@@ -1,0 +1,6 @@
+import {
+  "moonbitlang/core/json",
+  "walkzzz/agentskills.mbt/sandbox",
+}
+
+supported_targets = "js"
