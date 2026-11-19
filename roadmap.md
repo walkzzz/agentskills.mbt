@@ -81,7 +81,7 @@
 | 功能 | 描述 | 版本 | 状态 |
 | --- | --- | --- | --- |
 | F17 | AIP 智能体互联协议适配层（GB/Z 185.6） | 1.0.0 | 🔶 sans-I/O 核心与模型已就绪；**examples/interconnect_demo 就绪**（ATR 注册→ADP 发现→单播直连→群组 fanout→变异信封拒收→不变量，一条命令 moon run）；transport/MQ/mTLS/互通 ⬜ |
-| F01 | SKILL.md 解析与校验 | 0.1.0 | 🔶 parse_skill_md 落地（frontmatter 提取+moonyaml+validate，4 测试含差分层起步）；YAML 全语法面与文件系统读随 async 接入 ⬜ |
+| F01 | SKILL.md 解析与校验 | 0.1.0 | 🔶 parse_skill_md 落地（frontmatter 提取+moonyaml+validate）；**差分层 42 样本冻结验证绿**（上游全量 SKILL.md：compatibility 字符串/inline 数组 metadata 兼容、8 块标量哨兵、BUG-001 known_failure 隔离）；YAML 全语法面与文件系统读随 async 接入 ⬜ |
 | F02 | 技能注册表与渐进加载 | 0.1.0 | 🔶 SkillRegistry Kernel 式纯函数域落地（register/lookup/count + LoadLevel 状态机，同名冲突 fail-fast）；文件加载 ⬜ |
 | F03 | 技能→工具适配器（MCP 面） | 0.1.0 | 🔶 tooling_bridge 落地（SkillTool trait + to_descriptor 单源映射 + register_skill_tool 桥入 gbz185 ToolRegistry，1 测试走通 invoke/审计）；MCP 面随 W9 ⬜ |
 | F04 | RAG 混合检索（BM25+RRF+HNSW） | 0.1.0 核心 | ⬜ |
