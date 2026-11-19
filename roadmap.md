@@ -87,7 +87,7 @@
 | F04 | RAG 混合检索（BM25+RRF+HNSW） | 0.1.0 核心 | 🔶 `rag` 包落地：MoonRetrieve BM25（中英分词）+ `rrf_fuse`（k=60）+ RankedHit（18/18 测试含融合手工期望）；moonhnsw 向量路与 LLM 重排注入随 W7-W8 ⬜ |
 | F05 | compactor 上下文压缩 | 1.0.0 | ⬜ |
 | F06 | RBAC 三级敏感 + 审计 | 0.1.0 | 🔶 `rbac` 包落地：三级敏感 × 三角色授权矩阵 `can_access`（纯函数）+ `Auditor` 单调审计日志（2 测试 13 断言）；高危二次确认随运行时壳 ⬜ |
-| F07 | 认证（JWT+口令） | 0.1.0 | 🔶 口令面落地（`auth` 包 bcrypt 封装，委托官方 moonbitlang/x，2 测试往返/盐差异）；JWT 面随 mooncred 集成 ⬜ |
+| F07 | 认证（JWT+口令） | 0.1.0 | 🔶 口令面（`auth` bcrypt 封装，委托官方 moonbitlang/x）+ **JWT 面（HS256 签发/校验，mooncred 0.8.1 + mooncrypt HMAC，Clock 纯值注入）**；4 测试往返/盐差异/签发校验/篡改拒收 |
 | F08 | 存储抽象（内存/文件/PG） | 0.1.0/1.0.0 | ⬜ |
 | F09 | WASM 沙箱三执行器 | 1.0.0 | ⬜ |
 | F10 | MoonBit 技能 wasm-gc 组件通道 [E2] | 1.0.0 | ⬜ |

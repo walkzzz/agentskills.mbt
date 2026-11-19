@@ -11,4 +11,6 @@ import {
   "walkzzz/gbz185.mbt@0.1.0",
   "niuniu513-ask/MoonRetrieve@0.6.0",
   "moonbitlang/x@0.5.7",
+  "moonbitstack/mooncred@0.8.1",
+  "moonbitstack/mooncrypt@0.5.2",
 }

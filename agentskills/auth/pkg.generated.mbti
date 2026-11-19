@@ -2,13 +2,19 @@
 package "walkzzz/agentskills.mbt/auth"
 
 import {
+  "moonbitlang/core/json",
   "moonbitlang/x/bcrypt",
+  "moonbitstack/mooncred/jwt",
 }
 
 // Values
 pub const MAX_PASSWORD_BYTES : Int32 = 72
 
 pub fn hash_password(String, Bytes, cost? : Int32) -> String raise @bcrypt.BcryptError
+
+pub fn sign_hs256(Map[String, @json.Json], Bytes) -> String raise @jwt.Refused
+
+pub fn verify_hs256(String, Bytes, Int64, policy? : @jwt.Policy) -> Map[String, @json.Json] raise @jwt.Refused
 
 pub fn verify_password(String, String) -> Bool raise @bcrypt.BcryptError
 

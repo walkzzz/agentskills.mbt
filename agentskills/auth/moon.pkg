@@ -1,4 +1,8 @@
 import {
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/x/bcrypt" @xbcrypt,
+  "moonbitstack/mooncred/jwt",
+  "moonbitstack/mooncrypt/spec",
+  "moonbitstack/mooncrypt/mac/hmac",
+  "moonbitstack/mooncrypt/hash/sha2",
 }
