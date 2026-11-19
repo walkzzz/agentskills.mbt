@@ -139,7 +139,7 @@
 
 | 发布物 | 日期 | 门禁 |
 | --- | --- | --- |
-| agentskills.mbt 0.1.0 | 2027-01-22 | W10 门禁首跑（M2） |
+| agentskills.mbt 0.1.0 | **2026-11-19（已发布 mooncakes）** | 27/27 测试 + deny-warn + 变异 14/14 + repo_stats 绿（提前于 M2 排期，发布 Server status 200） |
 | agentskills.mbt 1.0.0 | 2027-02-19 | 门禁终跑 + 对照矩阵 100%（M3） |
 
 （原 bcrypt/bm25/pg/wasm3 四条库发布行随自研计划撤销删除，2026-11-18。）
