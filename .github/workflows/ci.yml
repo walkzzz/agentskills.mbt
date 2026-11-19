@@ -167,3 +167,31 @@ jobs:
           # 可见性优先：报告生成即通过；未覆盖行数不如硬门禁（新代码会波动）
           grep -q "Total: .*uncovered" coverage.log || { echo "::error::coverage report missing"; exit 1; }
           echo "coverage analyze exit code: $RC"
+
+  components:
+    name: WebAssembly Component (WIT)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: Install wit-bindgen (cargo)
+        run: cargo install wit-bindgen-cli --locked
+      - name: Install wasm-tools (cargo)
+        run: cargo install wasm-tools --locked
+      - name: Build component + prove interface (WIT)
+        run: bash scripts/component_build.sh
+      - name: Upload component artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentskills-component
+          path: components/agentskills.component.wasm
+          if-no-files-found: error

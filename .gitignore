@@ -4,3 +4,9 @@
 *.mutated
 .mutation-backup/
 *.tmp
+/components/gen/
+/components/ffi/
+/components/world/
+/components/moon.mod
+/components/target/
+/components/*.wasm

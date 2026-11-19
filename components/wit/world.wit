@@ -1,0 +1,22 @@
+package walkzzz:agentskills@0.1.0;
+
+///|
+/// agentskills 技能运行时核心能力的 WIT 接口（WebAssembly Component Model）。
+/// 推广展示面：MoonBit 技能运行时以标准组件被任意支持组件模型的宿主
+/// （JS / Python / Rust / wasmtime）调用。
+interface skill-api {
+    /// SKILL.md frontmatter 解析：返回 name 字段（失败空串）。
+    parse-name: func(skill-md: string) -> string;
+    /// SKILL.md frontmatter 解析：返回 description 字段（失败空串）。
+    parse-description: func(skill-md: string) -> string;
+    /// 校验："" 表示合法，否则为错误信息。
+    validate: func(skill-md: string) -> string;
+    /// RBAC 授权判定（role/sensitivity 序数：0/1/2）——与 verify/proof 的 allowed 核一致。
+    can-access: func(role-rank: u32, sens-rank: u32) -> bool;
+    /// RRF 单路融合分：1 / (k + rank)（倒数排名融合的评分核）。
+    rrf-score: func(rank: u32, k: u32) -> f64;
+}
+
+world agentskills {
+    export skill-api;
+}

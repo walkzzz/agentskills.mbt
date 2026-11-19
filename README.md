@@ -14,7 +14,7 @@
 
 **简体中文（默认）** · [English](#english)
 
-**目录**：[特性一览](#特性一览) · [快速开始](#快速开始) · [双智能体互联演示](#双智能体互联演示国标全流程) · [质量与验证](#质量与验证) · [能力与边界](#能力与边界) · [文档](#文档) · [许可证](#许可证)
+**目录**：[特性一览](#特性一览) · [快速开始](#快速开始) · [WebAssembly 组件](#webassembly-组件component-model--推广展示) · [双智能体互联演示](#双智能体互联演示国标全流程) · [质量与验证](#质量与验证) · [能力与边界](#能力与边界) · [文档](#文档) · [许可证](#许可证)
 
 ---
 
@@ -22,7 +22,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 
 | 成员 | 内容 |
 | --- | --- |
-| **agentskills**（主模块） | **F01** SKILL.md 解析（moonyaml→SkillManifest+validate）· **F02** SkillRegistry（渐进加载状态机，Kernel 式纯函数域）· **F03** tooling_bridge（GB/Z 185.7 单源映射）· **F04** RAG（BM25+RRF）· **F05** compactor（Unicode 安全截断）· **F06** RBAC（三级敏感+审计）· **F07** 认证（bcrypt+HS256 JWT）· **F08** 存储（内存+JSONL+async IO）· **F09** 沙箱 API（GasMeter）· **F14** 服务端 API（Router+SSE）· **F15** CLI |
+| **agentskills**（主模块） | **F01** SKILL.md 解析（moonyaml→SkillManifest+validate）· **F02** SkillRegistry（渐进加载状态机，Kernel 式纯函数域）· **F03** tooling_bridge（GB/Z 185.7 单源映射）· **F04** RAG（BM25+RRF）· **F05** compactor（Unicode 安全截断）· **F06** RBAC（三级敏感+审计）· **F07** 认证（bcrypt+HS256 JWT）· **F08** 存储（内存+JSONL+async IO+**PostgreSQL**）· **F09** 沙箱（GasMeter + **js WebAssembly 执行器**）· **F14** 服务端 API（Router+SSE）· **F15** CLI · **WASM 组件（WIT）** |
 | **verify** | fixture 资产 + **差分层**：known_failure 隔离机制（与上游语义分歧登记即跳过，修复后断言自动生效）+ 冻结期望差分测试 |
 | **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)**（独立仓，已发布 mooncakes） | GB/Z 185-2026《人工智能 智能体互联》协议栈全 7 部分 + 形式化验证（moon prove 20 obligations proved / 13 verified functions） |
 
@@ -55,6 +55,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | 双智能体互联演示（GB/Z 185.3/185.5/185.6 全流程） | ✅ |
 | 形式化验证（moon prove 8 goals proved） | ✅ |
 | 变异测试（24/24 KILLED，7 功能域） | ✅ |
+| **WebAssembly 组件导出（Component Model · WIT 标准接口，CI 自证）** | ✅ |
 
 ## 快速开始
 
@@ -73,6 +74,32 @@ moon run examples/interconnect_demo   # 双智能体互联演示（sans-I/O 零�
 moon add walkzzz/agentskills.mbt
 moon update
 ```
+
+## WebAssembly 组件（Component Model · 推广展示）
+
+MoonBit 一流支持 WebAssembly：本项目核心能力以 **Component Model**（[bytecodealliance 标准](https://component-model.bytecodealliance.org/)）导出——`walkzzz:agentskills@0.1.0` 的 `skill-api` 接口（WIT）可被**任意支持组件模型的宿主**（JS / Python / Rust / wasmtime）零胶水调用：
+
+```wit
+package walkzzz:agentskills@0.1.0;
+interface skill-api {
+  parse-name: func(skill-md: string) -> string;
+  parse-description: func(skill-md: string) -> string;
+  validate: func(skill-md: string) -> string;
+  can-access: func(role-rank: u32, sens-rank: u32) -> bool;
+  rrf-score: func(rank: u32, k: u32) -> f64;
+}
+world agentskills { export skill-api; }
+```
+
+一条命令构建（WIT → wit-bindgen → MoonBit stub 实装 → `moon build --target wasm` → wasm-tools 组件化）：
+
+```bash
+bash scripts/component_build.sh
+# → components/agentskills.component.wasm
+# → wasm-tools component wit 接口自证（package/world/interface 输出）
+```
+
+CI 的 `components` job 自动构建并上传 `.component.wasm` artifact——详见 [components/README.md](components/README.md)。这是 MoonBit 生态中以 **WIT 标准组件** 发布技能运行时的示范面。
 
 ## 双智能体互联演示（国标全流程）
 
