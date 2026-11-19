@@ -3,7 +3,7 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/) 与 [语义化版本](https://semver.org/)。
 数字口径：测试与功能状态以仓库实测为准（native，日期标注）。
 
-## [Unreleased]
+## [0.1.0] - 2026-11-19
 
 ### Added
 
