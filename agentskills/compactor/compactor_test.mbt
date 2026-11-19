@@ -24,6 +24,12 @@ test {
   let s = "智能体互联协议🦀MoonBit"
   let t = @compactor.truncate_chars(s, 5)
   assert_true(t.has_prefix("智能体互联"))
+  // 精确字符数：5 个保留字 + 1 个省略号 = 6（off-by-one 变异杀手）
+  let mut cnt = 0
+  for _c in t {
+    cnt = cnt + 1
+  }
+  assert_eq(cnt, 6)
   let full = @compactor.truncate_chars(s, 100)
   assert_eq(full, s)
   assert_false(t.contains("\u{FFFD}"))

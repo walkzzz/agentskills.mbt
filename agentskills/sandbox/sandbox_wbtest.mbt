@@ -42,3 +42,14 @@ test {
   }
   assert_eq(sb.call_count(), 3)
 }
+
+///|
+test {
+  // 缺入口 → 失败分型
+  let sb = StubSandbox::new()
+  let one = Bytes::from_array([1])
+  match sb.execute(one, "", Json::string("x"), 10L) {
+    Failed(_) => assert_true(true)
+    _ => assert_true(false)
+  }
+}

@@ -39,5 +39,5 @@
 
 ### Verified
 
-- `moon check --deny-warn` 干净；`moon test` 37/37（native，2026-11-19，含 quickcheck 属性、RAG、bcrypt、RBAC、HS256、compactor Unicode 截断、存储契约、JSONL 编解码往返、沙箱燃料模型、HTTP 路由/SSE 编码）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 14/14 KILLED（击杀率 100%，scripts/mutation_test.mbtx）**。
+- `moon check --deny-warn` 干净；`moon test` 43/43（native，2026-11-19，含 quickcheck 属性、RAG、bcrypt、RBAC、HS256、compactor Unicode 截断、存储契约、JSONL 编解码往返、沙箱燃料、HTTP 路由/SSE 编码、frontmatter 错误分支）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 24/24 KILLED（击杀率 100%，7 功能域，scripts/mutation_test.mbtx）**；覆盖率库代码仅 3 行未覆盖（`moon coverage analyze` 经 WSL；详见 docs/TEST_REPORT.md）。
 - 依赖：`walkzzz/gbz185.mbt@0.1.0`（mooncakes 已发布，国标协议栈 13 verified functions / 20 obligations machine-proved）。

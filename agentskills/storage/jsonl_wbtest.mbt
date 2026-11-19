@@ -52,3 +52,19 @@ test {
     None => assert_true(false)
   }
 }
+
+///|
+test {
+  // 未知转义序列：unescape fallback 分支输出原字符
+  match parse_line("{\"key\":\"a\\qb\",\"value\":\"v\"}") {
+    Some((k, _)) => assert_true(k == "aqb")
+    None => assert_true(false)
+  }
+}
+
+///|
+test {
+  // 空集合编解码边界
+  assert_eq(encode_all([]), "")
+  assert_eq(parse_all("").length(), 0)
+}

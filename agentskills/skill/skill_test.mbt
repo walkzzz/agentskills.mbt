@@ -159,3 +159,44 @@ test {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test {
+  // frontmatter 错误分支覆盖（类型错误的字段必须 Err）
+  assert_true(
+    @skill.parse_skill_md("---\nname: x\ndescription: d\nlicense: 123\n---\n")
+    is Err(_),
+  )
+  assert_true(
+    @skill.parse_skill_md(
+      "---\nname: x\ndescription: d\ncompatibility: {a: b}\n---\n",
+    )
+    is Err(_),
+  )
+  assert_true(
+    @skill.parse_skill_md(
+      "---\nname: x\ndescription: d\ncompatibility: [1, 2]\n---\n",
+    )
+    is Err(_),
+  )
+  assert_true(
+    @skill.parse_skill_md(
+      "---\nname: x\ndescription: d\nmetadata: [1, 2]\n---\n",
+    )
+    is Err(_),
+  )
+  assert_true(
+    @skill.parse_skill_md("---\nname: [x]\ndescription: d\n---\n") is Err(_),
+  )
+  assert_true(
+    @skill.parse_skill_md("---\nname: x\ndescription: [d]\n---\n") is Err(_),
+  )
+}
+
+///|
+test {
+  // 非法 YAML（重复键）→ loads 抛错 → catch 分支
+  assert_true(
+    @skill.parse_skill_md("---\nname: \"abc\ndescription: d\n---\n") is Err(_),
+  )
+}

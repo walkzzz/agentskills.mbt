@@ -29,3 +29,12 @@ test {
   assert_eq(single[0].doc_id, "x")
   assert_eq(single[1].doc_id, "y")
 }
+
+///|
+test {
+  // 同分 tie-break（doc_id 升序，覆盖 sort_by 比较分支）
+  let fused = @rag.rrf_fuse([["b"], ["a"]], k=60)
+  assert_eq(fused.length(), 2)
+  assert_eq(fused[0].doc_id, "a")
+  assert_eq(fused[1].doc_id, "b")
+}
