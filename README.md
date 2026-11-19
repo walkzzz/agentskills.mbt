@@ -1,14 +1,20 @@
 # agentskills.mbt
 
 <p align="left">
+  <a href="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.1.0-blueviolet"></a>
   <img alt="MoonBit" src="https://img.shields.io/badge/MoonBit-%E6%9C%88%E5%85%94-purple">
   <img alt="Tests" src="https://img.shields.io/badge/tests-45%2F45%20passing-brightgreen">
+  <img alt="Mutation" src="https://img.shields.io/badge/mutation-24%2F24%20KILLED-success">
+  <img alt="Prove" src="https://img.shields.io/badge/moon%20prove-8%20goals%20proved-blue">
   <img alt="Standard" src="https://img.shields.io/badge/SKILL.md-standard-teal">
   <img alt="GBZ" src="https://img.shields.io/badge/GB%2FZ%20185--2026-%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%92%E8%81%94-red">
 </p>
 
 **简体中文（默认）** · [English](#english)
+
+**目录**：[特性一览](#特性一览) · [快速开始](#快速开始) · [双智能体互联演示](#双智能体互联演示国标全流程) · [质量与验证](#质量与验证) · [能力与边界](#能力与边界) · [文档](#文档) · [许可证](#许可证)
 
 ---
 
@@ -21,6 +27,34 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)**（独立仓，已发布 mooncakes） | GB/Z 185-2026《人工智能 智能体互联》协议栈全 7 部分 + 形式化验证（moon prove 20 obligations proved / 13 verified functions） |
 
 架构采用**三层执行模型**（吸收 posoco 实战范式）：Kernel 式纯函数域（`skill/`）→ 运行时壳（`cli/`）→ 互联协议栈（gbz185 仓）——"有状态"与"纯函数"彻底分离，组合失败即 fail-fast。
+
+```
+      应用面（CLI / Server / Examples）
+                 │
+      运行时壳（cli/ · server/ · examples/）—— IO、时钟、密钥由调用方注入
+                 │
+      Kernel 纯函数域（skill/ rag/ auth/ rbac/ compactor/ storage/ sandbox/ tooling_bridge）
+                 │
+      GB/Z 185 协议栈（gbz185.mbt 独立仓 · 20 obligations proved）
+```
+
+## 特性一览
+
+| 能力 | 状态 |
+| --- | --- |
+| SKILL.md 标准解析（moonyaml frontmatter + validate） | ✅ |
+| 技能注册表渐进加载（同名冲突 fail-fast） | ✅ |
+| 工具单源桥接（GB/Z 185.7 ToolDescriptor → gbz185 ToolRegistry） | ✅ |
+| 混合检索（BM25 + RRF 倒数排名融合） | ✅ |
+| 上下文压缩（确定性裁剪 + Unicode 安全截断） | ✅ |
+| RBAC 三级敏感授权 + 单调审计日志 | ✅ |
+| 认证（bcrypt 口令 + HS256 JWT，不自研密码学） | ✅ |
+| 存储抽象（内存 / JSONL 编解码 / async 文件 IO） | ✅ |
+| 沙箱 API + 燃料计量（形式化契约核） | ✅ |
+| 服务端 API（HTTP 契约 + Router + SSE 编码） | ✅ |
+| 双智能体互联演示（GB/Z 185.3/185.5/185.6 全流程） | ✅ |
+| 形式化验证（moon prove 8 goals proved） | ✅ |
+| 变异测试（24/24 KILLED，7 功能域） | ✅ |
 
 ## 快速开始
 
@@ -67,6 +101,18 @@ moon update
 - 差分层 **42/40 达成**（上游全量 SKILL.md 冻结，含 1 登记分歧 BUG-001——见 [docs/known-gaps.md](docs/known-gaps.md)）。
 - **不含**：MQ 分发、国密互联安全层（gbz185 仓 0.2.0 路线）。
 - 完整真话台账见 [docs/known-gaps.md](docs/known-gaps.md)；milestone 真相源见 `roadmap.md`。
+
+## 文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [docs/TEST_REPORT.md](docs/TEST_REPORT.md) | 测试矩阵 · 变异清单 · 覆盖率基线 · 形式化验证 |
+| [docs/known-gaps.md](docs/known-gaps.md) | 真话台账：已知边界与缺口（诚实记录） |
+| [roadmap.md](roadmap.md) | 里程碑路线与功能面进度（真相源） |
+| [CHANGELOG.md](CHANGELOG.md) | 版本变更（Keep a Changelog） |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南：门禁命令 · 差分层三铁律 · 架构纪律 |
+| [SECURITY.md](SECURITY.md) | 安全政策：漏洞报告渠道 · 防重放证明背书 |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | 行为准则（Contributor Covenant 2.1） |
 
 ## 许可证
 
