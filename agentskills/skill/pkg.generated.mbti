@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "walkzzz/agentskills.mbt/skill"
 
+import {
+  "moonbitlang/core/json",
+}
+
 // Values
 pub fn parse_skill_md(String) -> Result[(SkillManifest, String), String]
 
@@ -20,7 +24,7 @@ pub(all) struct SkillManifest {
   description : String
   license : String?
   compatibility : Array[String]?
-  metadata : Map[String, String]?
+  metadata : Map[String, @json.Json]?
 }
 
 pub(all) struct SkillRegistry {

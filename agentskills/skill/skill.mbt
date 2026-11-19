@@ -9,7 +9,7 @@ pub(all) struct SkillManifest {
   description : String
   license : String?
   compatibility : Array[String]?
-  metadata : Map[String, String]?
+  metadata : Map[String, Json]?
 }
 
 ///|

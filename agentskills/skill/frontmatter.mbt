@@ -3,7 +3,8 @@
 ///
 ///En: parse_skill_md extracts the YAML frontmatter of a SKILL.md file into a SkillManifest.
 ///格式：`---` 起始行、YAML 正文、`---` 结束行；返回 (manifest, 正文)。缺 frontmatter 或 YAML
-///非法返回 Err（fail-fast）。YAML 解析经 moonyaml（W1-D1 锁定）；metadata 映射限定一层扁平 KV。
+///非法返回 Err（fail-fast）。YAML 解析经 moonyaml（W1-D1 锁定）；metadata 各键保留原始 Json 值
+///（上游真实文件含内联数组等非标量形态，如 tags: ["a", "b"]——不作扁平化收窄）。
 pub fn parse_skill_md(text : String) -> Result[(SkillManifest, String), String] {
   let view_lines = text.split("\n").collect()
   let lines : Array[String] = []
@@ -36,7 +37,7 @@ pub fn parse_skill_md(text : String) -> Result[(SkillManifest, String), String] 
   let mut description = ""
   let mut license : String? = None
   let mut compatibility : Array[String]? = None
-  let mut metadata : Map[String, String]? = None
+  let mut metadata : Map[String, Json]? = None
   match j {
     Object(fields) =>
       for pair in fields {
@@ -59,6 +60,7 @@ pub fn parse_skill_md(text : String) -> Result[(SkillManifest, String), String] 
             }
           "compatibility" =>
             match v {
+              String(s) => compatibility = Some([s])
               Array(items) => {
                 let arr : Array[String] = []
                 for it in items {
@@ -72,18 +74,15 @@ pub fn parse_skill_md(text : String) -> Result[(SkillManifest, String), String] 
                 }
                 compatibility = Some(arr)
               }
-              _ => return Err("field 'compatibility' must be a list")
+              _ => return Err("field 'compatibility' must be a list or string")
             }
           "metadata" =>
             match v {
               Object(kv) => {
-                let m : Map[String, String] = Map::from_array([])
+                let m : Map[String, Json] = Map::from_array([])
                 for p2 in kv {
                   let (k2, v2) = p2
-                  match v2 {
-                    String(s) => m[k2] = s
-                    _ => return Err("metadata values must be strings")
-                  }
+                  m[k2] = v2
                 }
                 metadata = Some(m)
               }

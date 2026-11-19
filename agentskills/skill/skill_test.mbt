@@ -53,7 +53,7 @@ test {
   assert_true(m.license == Some("MIT"))
   assert_true(m.compatibility == Some(["moonbit"]))
   match m.metadata {
-    Some(mm) => assert_eq(mm.get("author"), Some("walkzzz"))
+    Some(mm) => assert_eq(mm.get("author"), Some(Json::string("walkzzz")))
     None => assert_true(false)
   }
   assert_true(body.contains("# Demo"))

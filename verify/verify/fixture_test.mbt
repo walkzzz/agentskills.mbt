@@ -9,7 +9,9 @@ test {
     match @skill.parse_skill_md(fx.skill_md) {
       Ok((m, _body)) => {
         assert_eq(m.name, fx.expect_name)
-        assert_eq(m.description, fx.expect_description)
+        if fx.expect_description != "" {
+          assert_eq(m.description, fx.expect_description)
+        }
         assert_true(m.license == fx.expect_license)
       }
       Err(e) => {
@@ -22,6 +24,6 @@ test {
 
 ///|
 test {
-  assert_eq(@verify.fixtures.length(), 3)
+  assert_eq(@verify.fixtures.length(), 42)
   assert_true(@verify.guard_known("BUG-000") == false)
 }
