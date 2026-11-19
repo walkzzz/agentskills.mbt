@@ -100,3 +100,62 @@ test {
   assert_true(reg.register(dup, @skill.FullyLoaded) is Err(_))
   assert_true(reg.lookup("missing") is None)
 }
+
+///|
+test {
+  // description 长度边界（变异杀手：1024 边界宽松化）
+  let long_desc : @skill.SkillManifest = {
+    name: "demo",
+    description: "d".repeat(1025),
+    license: None,
+    compatibility: None,
+    metadata: None,
+  }
+  assert_true(@skill.validate(long_desc) is Err(_))
+  let ok_desc : @skill.SkillManifest = {
+    name: "demo",
+    description: "d".repeat(1024),
+    license: None,
+    compatibility: None,
+    metadata: None,
+  }
+  assert_true(@skill.validate(ok_desc) is Ok(_))
+}
+
+///|
+test {
+  // 非法 manifest 注册被拒（变异杀手：registry validate 先行失效）
+  let reg = @skill.SkillRegistry::new()
+  let bad : @skill.SkillManifest = {
+    name: "",
+    description: "x",
+    license: None,
+    compatibility: None,
+    metadata: None,
+  }
+  assert_true(reg.register(bad, @skill.Metadata) is Err(_))
+  assert_eq(reg.count(), 0)
+}
+
+///|
+test {
+  // compatibility 字符串标量形态（变异杀手：String 分支丢值）
+  let text = "---\nname: c\ndescription: d\ncompatibility: cangjie\n---\nbody"
+  match @skill.parse_skill_md(text) {
+    Ok((m, _)) => assert_true(m.compatibility == Some(["cangjie"]))
+    Err(_) => assert_true(false)
+  }
+}
+
+///|
+test {
+  // 块标量 description 的折叠语义锁定（moonyaml `>` folded scalar：行以空格连接）
+  let text = "---\nname: b\ndescription: >\n  folded line one\n  folded line two\n---\nbody"
+  match @skill.parse_skill_md(text) {
+    Ok((m, _)) => {
+      assert_true(m.description.contains("folded line one"))
+      assert_true(m.description.contains("folded line two"))
+    }
+    Err(_) => assert_true(false)
+  }
+}

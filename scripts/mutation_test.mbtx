@@ -6,9 +6,9 @@ import {
 }
 ---
 
-// AIP 包变异测试（scripts/mutation_test.mbtx）
-// 运行：moon run scripts/mutation_test.mbtx
+// agentskills.mbt 变异测试（运行：仓根 `moon run scripts/mutation_test.mbtx`）
 // 对每个变异：生成变异源文件 → moon test → 判定 KILLED/SURVIVED → 恢复 → 汇总报告
+// 纪律：每个变异点必须有杀手测试（新增覆盖 F01 validate 边界/F02 注册校验/差分层哨兵）。
 
 ///|
 struct Mutation {
@@ -23,73 +23,101 @@ struct Mutation {
 let mutations : Array[Mutation] = [
   {
     id: "M01",
-    file: "aip/protocol.mbt",
-    old_sub: "self.outbox_seq += 1L",
-    new_sub: "self.outbox_seq += 2L",
-    desc: "outbox step doubled",
+    file: "agentskills/skill/skill.mbt",
+    old_sub: "m.name.length() > 64",
+    new_sub: "m.name.length() > 64000",
+    desc: "name length bound loosened 64->64000",
   },
   {
     id: "M02",
-    file: "aip/protocol.mbt",
-    old_sub: "guard env.seq > last else {",
-    new_sub: "guard env.seq >= last else {",
-    desc: "replay seq comparison loosened",
+    file: "agentskills/skill/skill.mbt",
+    old_sub: "if m.name.is_empty() {",
+    new_sub: "if false {",
+    desc: "name required guard disabled",
   },
   {
     id: "M03",
-    file: "aip/protocol.mbt",
-    old_sub: "recipient_urn.has_prefix(\"urn:agent:group:\")",
-    new_sub: "recipient_urn.has_prefix(\"urn:agent:grp:\")",
-    desc: "group URN prefix mutated",
+    file: "agentskills/skill/skill.mbt",
+    old_sub: "} else if m.description.is_empty() {",
+    new_sub: "} else if false {",
+    desc: "description required guard disabled",
   },
   {
     id: "M04",
-    file: "aip/protocol.mbt",
-    old_sub: "guard resp.accepted else {",
-    new_sub: "guard !resp.accepted else {",
-    desc: "register acceptance negated",
+    file: "agentskills/skill/skill.mbt",
+    old_sub: "m.description.length() > 1024",
+    new_sub: "m.description.length() > 102400",
+    desc: "description length bound loosened",
   },
   {
     id: "M05",
-    file: "aip/protocol.mbt",
-    old_sub: "guard env.recipient_urn == self.self_node.urn else {",
-    new_sub: "guard env.recipient_urn != self.self_node.urn else {",
-    desc: "recipient check negated",
+    file: "agentskills/skill/registry.mbt",
+    old_sub: "if self.entries.contains(m.name) {",
+    new_sub: "if false {",
+    desc: "registry duplicate check disabled",
   },
   {
     id: "M06",
-    file: "aip/protocol.mbt",
-    old_sub: "guard env.sender_urn != self.self_node.urn else {",
-    new_sub: "guard env.sender_urn == self.self_node.urn else {",
-    desc: "self-loop check negated",
+    file: "agentskills/skill/registry.mbt",
+    old_sub: "Err(e) => return Err(e)",
+    new_sub: "Err(_e) => ()",
+    desc: "registry validate-first dropped",
   },
   {
     id: "M07",
-    file: "aip/identity.mbt",
-    old_sub: "NoIdentity => \"none\"",
-    new_sub: "NoIdentity => \"noneX\"",
-    desc: "identity wire value mutated",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "lines[0].trim() != \"---\"",
+    new_sub: "lines[0].trim() == \"---\"",
+    desc: "frontmatter first-line check negated",
   },
   {
     id: "M08",
-    file: "aip/codec.mbt",
-    old_sub: "None => []",
-    new_sub: "None => raise Envelope(\"mutated\")",
-    desc: "missing-key default tightened",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "if lines[i].trim() == \"---\" {",
+    new_sub: "if lines[i].trim() != \"---\" {",
+    desc: "frontmatter closing check negated",
   },
   {
     id: "M09",
-    file: "aip/envelope.mbt",
-    old_sub: "\"event\" => Some(Event)",
-    new_sub: "\"event\" => Some(TaskRequest)",
-    desc: "kind constructor swapped",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "String(s) => compatibility = Some([s])",
+    new_sub: "String(_s) => compatibility = Some([])",
+    desc: "compatibility string branch drops value",
   },
   {
     id: "M10",
-    file: "aip/codec.mbt",
-    old_sub: "guard p == protocol_name() else {",
-    new_sub: "guard p != protocol_name() else {",
-    desc: "protocol check negated",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "m[k2] = v2",
+    new_sub: "()",
+    desc: "metadata entry dropped",
+  },
+  {
+    id: "M11",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "body_parts.push(lines[i].to_string())",
+    new_sub: "body_parts.push(\"\")",
+    desc: "skill body lost",
+  },
+  {
+    id: "M12",
+    file: "verify/verify/known_failure.mbt",
+    old_sub: "if f == id {",
+    new_sub: "if f != id {",
+    desc: "guard_known membership negated",
+  },
+  {
+    id: "M13",
+    file: "verify/verify/known_failure.mbt",
+    old_sub: "\"UP-019\",",
+    new_sub: "\"UP-999\",",
+    desc: "known_failure registry entry corrupted (quarantine lost)",
+  },
+  {
+    id: "M14",
+    file: "agentskills/skill/frontmatter.mbt",
+    old_sub: "          _ => ()\n        }",
+    new_sub: "          _ => return Err(\"unknown field\")\n        }",
+    desc: "unknown frontmatter field rejected",
   },
 ]
 
@@ -110,7 +138,7 @@ fn replace_all(s : String, old : String, new : String) -> String {
 }
 
 ///|
-async fn run_tests() -> Int raise {
+async fn run_tests() -> Int {
   let (code, _out, _err) = @proc.collect_output("moon", ["test"], cwd=".") catch {
     _ => panic()
   }
@@ -120,7 +148,11 @@ async fn run_tests() -> Int raise {
 ///|
 async fn main raise {
   let files = [
-    "aip/protocol.mbt", "aip/identity.mbt", "aip/codec.mbt", "aip/envelope.mbt",
+    "agentskills/skill/skill.mbt",
+    "agentskills/skill/registry.mbt",
+    "agentskills/skill/frontmatter.mbt",
+    "verify/verify/known_failure.mbt",
+    "verify/verify/fixture_test.mbt",
   ]
   let sources : Map[String, String] = Map([])
   for f in files {
@@ -128,7 +160,6 @@ async fn main raise {
     sources[f] = content
   }
   let mut killed = 0
-  let mut compile_blocked = 0
   let mut survived = 0
   let results : Array[String] = []
   for m in mutations {
@@ -154,9 +185,7 @@ async fn main raise {
     println(r)
   }
   println("=== mutation summary ===")
-  println(
-    "killed=\{killed} survived=\{survived} total=\{mutations.length()} (compile failures count as killed)",
-  )
+  println("killed=\{killed} survived=\{survived} total=\{mutations.length()}")
   if final_code == 0 {
     println("baseline restored: tests green")
   } else {
