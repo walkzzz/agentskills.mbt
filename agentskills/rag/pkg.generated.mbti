@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/rag"
+
+import {
+  "niuniu513-ask/MoonRetrieve",
+}
+
+// Values
+pub fn rrf_fuse(Array[Array[String]], k? : Int32) -> Array[RankedHit]
+
+// Errors
+
+// Types and methods
+pub struct RagIndex {
+  engine : @MoonRetrieve.Engine
+}
+pub fn RagIndex::add(Self, String, String) -> Unit
+pub fn RagIndex::count(Self) -> Int32
+pub fn RagIndex::new() -> Self
+pub fn RagIndex::search(Self, String, top_k? : Int32) -> Array[@MoonRetrieve.SearchResult]
+
+pub(all) struct RankedHit {
+  doc_id : String
+  score : Double
+}
+
+// Type aliases
+
+// Traits
