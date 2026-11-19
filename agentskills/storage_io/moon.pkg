@@ -1,0 +1,6 @@
+import {
+  "moonbitlang/async/fs",
+  "walkzzz/agentskills.mbt/storage",
+}
+
+supported_targets = "native"

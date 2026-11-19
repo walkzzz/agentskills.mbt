@@ -6,13 +6,9 @@ pub fn encode_all(Array[(String, String)]) -> String
 
 pub fn encode_line(String, String) -> String
 
-pub async fn load_jsonl(String) -> Array[(String, String)]
-
 pub fn parse_all(String) -> Array[(String, String)]
 
 pub fn parse_line(String) -> (String, String)?
-
-pub async fn save_jsonl(String, Array[(String, String)]) -> Unit
 
 // Errors
 

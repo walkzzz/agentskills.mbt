@@ -7,8 +7,8 @@ async fn main {
     ("skill/demo", "{\"name\":\"demo\"}"),
     ("skill/中文", "多行\n内容\t带制表"),
   ]
-  @storage.save_jsonl(path, pairs)
-  let back = @storage.load_jsonl(path)
+  @storage_io.save_jsonl(path, pairs)
+  let back = @storage_io.load_jsonl(path)
   assert_eq(back.length(), 2)
   let ok = back[0].0 == pairs[0].0 &&
     back[0].1 == pairs[0].1 &&

@@ -1,6 +1,8 @@
 import {
   "moonbitlang/async",
-  "walkzzz/agentskills.mbt/storage",
+  "walkzzz/agentskills.mbt/storage_io",
 }
 
 pkgtype(kind: "executable")
+
+supported_targets = "native"
