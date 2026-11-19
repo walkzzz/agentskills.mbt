@@ -6,7 +6,7 @@ title: agentskills.mbt — MoonBit 技能运行时
 
 <p align="center">
   <a href="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.1.0-blueviolet"></a>
+  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.1.1-blueviolet"></a>
   <img alt="MoonBit" src="https://img.shields.io/badge/MoonBit-%E6%9C%88%E5%85%94-purple">
   <img alt="Tests" src="https://img.shields.io/badge/tests-45%2F45%20passing-brightgreen">
   <img alt="Mutation" src="https://img.shields.io/badge/mutation-24%2F24%20KILLED-success">
@@ -126,7 +126,7 @@ wasmtime run --invoke 'rrf-score(0, 60)' agentskills.component.wasm   # 0.0166..
 ## 相关链接
 
 - GitHub：[walkzzz/agentskills.mbt](https://github.com/walkzzz/agentskills.mbt)
-- mooncakes：[walkzzz/agentskills.mbt 0.1.0](https://mooncakes.io/docs/walkzzz/agentskills.mbt)
+- mooncakes：[walkzzz/agentskills.mbt 0.1.1](https://mooncakes.io/docs/walkzzz/agentskills.mbt)
 - 国标协议栈：[walkzzz/gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)（GB/Z 185-2026 全 7 部分 · 20 obligations proved）
 - 热心文档：[测试报告](TEST_REPORT.md) · [真话台账](known-gaps.md) · [README](https://github.com/walkzzz/agentskills.mbt)
 - 上游参考：[UCToo/agentskills-runtime](https://atomgit.com/UCToo/agentsskills-runtime)（仓颉实现）
