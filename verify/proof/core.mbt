@@ -8,7 +8,10 @@
 
 ///|
 ///gas_after — 燃料账本推进核（F09 GasMeter::consume 的语义核）。
-pub fn gas_after(used : Int64, amount : Int64) -> Int64 where {
+pub fn gas_after(
+  used : Int64,
+  amount : Int64,
+) -> Int64 where {
   proof_require: used >= 0,
   proof_require: amount >= 0,
   proof_ensure: res => res == used + amount,
@@ -33,7 +36,10 @@ pub fn gas_after_never_exceeds(
 
 ///|
 ///dropped — 压缩占位计数核（F05 compact 的 total - keep 语义核）。
-pub fn dropped(total : Int, keep : Int) -> Int where {
+pub fn dropped(
+  total : Int32,
+  keep : Int32,
+) -> Int32 where {
   proof_require: keep >= 0,
   proof_require: total > keep,
   proof_ensure: res => res == total - keep && res > 0,
@@ -43,7 +49,10 @@ pub fn dropped(total : Int, keep : Int) -> Int where {
 
 ///|
 ///dropped_positive — 只要发生折叠，占位计数必为正（禁止 0/负占位消息）。
-pub fn dropped_positive(total : Int, keep : Int) -> Bool where {
+pub fn dropped_positive(
+  total : Int32,
+  keep : Int32,
+) -> Bool where {
   proof_require: keep >= 0,
   proof_require: total > keep,
   proof_ensure: res => res == true,
@@ -53,27 +62,30 @@ pub fn dropped_positive(total : Int, keep : Int) -> Bool where {
 
 ///|
 ///RBAC 三级敏感度序数核（F06 can_access 的 rank 语义核）。
-pub const SENS_PUBLIC : Int = 0
+pub const SENS_PUBLIC : Int32 = 0
 
 ///|
-pub const SENS_INTERNAL : Int = 1
+pub const SENS_INTERNAL : Int32 = 1
 
 ///|
-pub const SENS_CONFIDENTIAL : Int = 2
+pub const SENS_CONFIDENTIAL : Int32 = 2
 
 ///|
 ///角色序数核（Viewer/Operator/Admin ↔ 0/1/2）。
-pub const ROLE_VIEWER : Int = 0
+pub const ROLE_VIEWER : Int32 = 0
 
 ///|
-pub const ROLE_OPERATOR : Int = 1
+pub const ROLE_OPERATOR : Int32 = 1
 
 ///|
-pub const ROLE_ADMIN : Int = 2
+pub const ROLE_ADMIN : Int32 = 2
 
 ///|
 ///allowed — 授权判定核：角色序数 >= 敏感度序数即允许（rbac can_access 语义）。
-pub fn allowed(role_rank : Int, sens_rank : Int) -> Bool where {
+pub fn allowed(
+  role_rank : Int32,
+  sens_rank : Int32,
+) -> Bool where {
   proof_require: role_rank >= 0,
   proof_require: sens_rank >= 0,
   proof_ensure: res => res == (role_rank >= sens_rank),
@@ -102,5 +114,6 @@ pub fn viewer_denied_confidential() -> Bool where {
 pub fn operator_boundary_exact() -> Bool where {
   proof_ensure: res => res == true,
 } {
-  allowed(ROLE_OPERATOR, SENS_INTERNAL) && !allowed(ROLE_OPERATOR, SENS_CONFIDENTIAL)
+  allowed(ROLE_OPERATOR, SENS_INTERNAL) &&
+  !allowed(ROLE_OPERATOR, SENS_CONFIDENTIAL)
 }
