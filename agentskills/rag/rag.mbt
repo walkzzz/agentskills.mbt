@@ -36,10 +36,29 @@ pub fn RagIndex::search(
 
 ///|
 ///RankedHit — RRF 融合结果（doc_id + 融合分）。
+///实现 `Compare`：score 降序优先，同分按 doc_id 升序稳定 tie-break（排序逻辑单元化）。
+#derive(Eq)
 pub(all) struct RankedHit {
   doc_id : String
   score : Double
 }
+
+///|
+pub extend RankedHit with Eq::{equal, not_equal}
+
+///|
+impl Compare for RankedHit with fn compare(self, other) {
+  if self.score > other.score {
+    -1
+  } else if self.score < other.score {
+    1
+  } else {
+    self.doc_id.compare(other.doc_id)
+  }
+}
+
+///|
+pub extend RankedHit with Compare::{compare}
 
 ///|
 ///rrf_fuse — 倒数排名融合（Reciprocal Rank Fusion，k 默认 60 标准值）。
@@ -68,14 +87,6 @@ pub fn rrf_fuse(
     let (doc_id, score) = pair
     hits.push({ doc_id, score, })
   }
-  hits.sort_by(fn(a, b) {
-    if a.score > b.score {
-      -1
-    } else if a.score < b.score {
-      1
-    } else {
-      a.doc_id.compare(b.doc_id)
-    }
-  })
+  hits.sort()
   hits
 }

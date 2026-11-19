@@ -22,6 +22,12 @@ pub fn sql_escape(s : String) -> String {
 }
 
 ///|
+///kv_where — kv 行定位子句（避免各处重复拼接与转义）。
+fn kv_where(k : String) -> String {
+  "k = '" + sql_escape(k) + "'"
+}
+
+///|
 ///with_pg_storage — 创建连接池、任务组内驱动 PoolExecutor（README 模式）、
 ///初始化 kv 表，然后执行 body。端口固定 5432（pgpool 的 ConnectionTarget 不暴露端口）。
 pub async fn with_pg_storage(
@@ -29,13 +35,13 @@ pub async fn with_pg_storage(
   user~ : String,
   password~ : String,
   dbname~ : String,
-  body : async (@pgpool.Pool) -> Unit raise
-) -> Unit raise {
+  body : async (@pgpool.Pool) -> Unit,
+) -> Unit {
   let cfg = @pgpool.Config::Config(
-    [@pgpool.ConnectionTarget(host=host)],
-    user=user,
-    dbname=dbname,
-    password=password,
+    [@pgpool.ConnectionTarget(host~)],
+    user~,
+    dbname~,
+    password~,
     ssl_mode=@pgclient.SslMode::Disable,
     application_name="agentskills-storage",
     pool=@pgpool.PoolConfig::PoolConfig(4),
@@ -54,7 +60,7 @@ pub async fn with_pg_storage(
 
 ///|
 ///kv_put — 写入/覆盖（UPSERT）。
-pub async fn kv_put(pool : @pgpool.Pool, k : String, v : String) -> Unit raise {
+pub async fn kv_put(pool : @pgpool.Pool, k : String, v : String) -> Unit {
   pool.batch_execute(
     "INSERT INTO agentskills_kv (k, v) VALUES ('" +
     sql_escape(k) +
@@ -66,7 +72,7 @@ pub async fn kv_put(pool : @pgpool.Pool, k : String, v : String) -> Unit raise {
 
 ///|
 ///kv_get — 读取（缺失返回 None）。
-pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? raise {
+pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? {
   let rows = pool.query_all(
     "SELECT v FROM agentskills_kv WHERE k = '" + sql_escape(k) + "'",
   )
@@ -79,7 +85,7 @@ pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? raise {
 
 ///|
 ///kv_delete — 删除（存在则 true）。
-pub async fn kv_delete(pool : @pgpool.Pool, k : String) -> Bool raise {
+pub async fn kv_delete(pool : @pgpool.Pool, k : String) -> Bool {
   let rows = pool.query_all(
     "DELETE FROM agentskills_kv WHERE k = '" + sql_escape(k) + "' RETURNING k",
   )
@@ -88,7 +94,7 @@ pub async fn kv_delete(pool : @pgpool.Pool, k : String) -> Bool raise {
 
 ///|
 ///kv_count_text — 行数（文本形式，避免整数解析依赖）。
-pub async fn kv_count_text(pool : @pgpool.Pool) -> String? raise {
+pub async fn kv_count_text(pool : @pgpool.Pool) -> String? {
   let rows = pool.query_all("SELECT count(*)::text FROM agentskills_kv")
   if rows.length() == 0 {
     None
@@ -99,6 +105,6 @@ pub async fn kv_count_text(pool : @pgpool.Pool) -> String? raise {
 
 ///|
 ///kv_clear — 清空表（联测收尾）。
-pub async fn kv_clear(pool : @pgpool.Pool) -> Unit raise {
+pub async fn kv_clear(pool : @pgpool.Pool) -> Unit {
   pool.batch_execute("DELETE FROM agentskills_kv")
 }

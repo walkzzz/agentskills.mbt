@@ -1,3 +1,15 @@
+// 断言 helper：统一 Ok/Err 判定（消除重复样板）。
+
+///|
+fn[T] assert_ok(r : Result[T, String]) -> Unit raise {
+  assert_true(r is Ok(_))
+}
+
+///|
+fn[T] assert_err(r : Result[T, String]) -> Unit raise {
+  assert_true(r is Err(_))
+}
+
 ///|
 test {
   let ok : @skill.SkillManifest = {
@@ -7,7 +19,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(ok) is Ok(_))
+  assert_ok(@skill.validate(ok))
   let no_name : @skill.SkillManifest = {
     name: "",
     description: "x",
@@ -15,7 +27,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(no_name) is Err(_))
+  assert_err(@skill.validate(no_name))
   let no_desc : @skill.SkillManifest = {
     name: "demo",
     description: "",
@@ -23,7 +35,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(no_desc) is Err(_))
+  assert_err(@skill.validate(no_desc))
   let long_name : @skill.SkillManifest = {
     name: "a".repeat(65),
     description: "x",
@@ -31,7 +43,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(long_name) is Err(_))
+  assert_err(@skill.validate(long_name))
   let with_opt : @skill.SkillManifest = {
     name: "demo",
     description: "x",
@@ -39,14 +51,14 @@ test {
     compatibility: Some(["moonbit"]),
     metadata: None,
   }
-  assert_true(@skill.validate(with_opt) is Ok(_))
+  assert_ok(@skill.validate(with_opt))
 }
 
 ///|
 test {
   let text = "---\nname: demo\ndescription: A demo skill\nlicense: MIT\ncompatibility:\n  - moonbit\nmetadata:\n  author: walkzzz\n---\n\n# Demo\n\nbody"
   let r = @skill.parse_skill_md(text)
-  assert_true(r is Ok(_))
+  assert_ok(r)
   let (m, body) = r.unwrap()
   assert_eq(m.name, "demo")
   assert_eq(m.description, "A demo skill")
@@ -61,11 +73,11 @@ test {
 
 ///|
 test {
-  assert_true(@skill.parse_skill_md("no frontmatter at all") is Err(_))
-  assert_true(@skill.parse_skill_md("---\nname: x\ndescription: y\n") is Err(_))
-  assert_true(@skill.parse_skill_md("---\n- item\n---\nbody") is Err(_))
+  assert_err(@skill.parse_skill_md("no frontmatter at all"))
+  assert_err(@skill.parse_skill_md("---\nname: x\ndescription: y\n"))
+  assert_err(@skill.parse_skill_md("---\n- item\n---\nbody"))
   let minimal = "---\nname: m\ndescription: d\n---\n"
-  assert_true(@skill.parse_skill_md(minimal) is Ok(_))
+  assert_ok(@skill.parse_skill_md(minimal))
 }
 
 ///|
@@ -79,7 +91,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(reg.register(m, @skill.Metadata) is Ok(_))
+  assert_ok(reg.register(m, @skill.Metadata))
   assert_eq(reg.count(), 1)
   match reg.lookup("a") {
     Some((m2, level)) => {
@@ -95,9 +107,9 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(reg.register(dup, @skill.FullyLoaded) is Err(_))
+  assert_err(reg.register(dup, @skill.FullyLoaded))
   assert_eq(reg.count(), 1)
-  assert_true(reg.register(dup, @skill.FullyLoaded) is Err(_))
+  assert_err(reg.register(dup, @skill.FullyLoaded))
   assert_true(reg.lookup("missing") is None)
 }
 
@@ -111,7 +123,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(long_desc) is Err(_))
+  assert_err(@skill.validate(long_desc))
   let ok_desc : @skill.SkillManifest = {
     name: "demo",
     description: "d".repeat(1024),
@@ -119,7 +131,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(@skill.validate(ok_desc) is Ok(_))
+  assert_ok(@skill.validate(ok_desc))
 }
 
 ///|
@@ -133,7 +145,7 @@ test {
     compatibility: None,
     metadata: None,
   }
-  assert_true(reg.register(bad, @skill.Metadata) is Err(_))
+  assert_err(reg.register(bad, @skill.Metadata))
   assert_eq(reg.count(), 0)
 }
 
