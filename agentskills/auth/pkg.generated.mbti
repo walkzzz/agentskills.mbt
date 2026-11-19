@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/auth"
+
+import {
+  "moonbitlang/x/bcrypt",
+}
+
+// Values
+pub const MAX_PASSWORD_BYTES : Int32 = 72
+
+pub fn hash_password(String, Bytes, cost? : Int32) -> String raise @bcrypt.BcryptError
+
+pub fn verify_password(String, String) -> Bool raise @bcrypt.BcryptError
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
