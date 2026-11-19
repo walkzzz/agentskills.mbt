@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/server"
+
+// Values
+pub fn method_not_allowed() -> HttpResponse
+
+pub fn not_found() -> HttpResponse
+
+pub fn ok(String) -> HttpResponse
+
+pub fn sse_event(String, String) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct HttpRequest {
+  http_method : String
+  path : String
+  body : String
+}
+
+pub(all) struct HttpResponse {
+  status : Int32
+  body : String
+}
+
+pub(all) struct Route {
+  http_method : String
+  path : String
+  kind : RouteKind
+  handler : (HttpRequest) -> HttpResponse
+}
+
+pub(all) enum RouteKind {
+  Exact
+  Prefix
+}
+
+pub struct Router {
+  routes : Array[Route]
+}
+pub fn Router::add(Self, String, String, RouteKind, (HttpRequest) -> HttpResponse) -> Unit
+pub fn Router::dispatch(Self, HttpRequest) -> HttpResponse
+pub fn Router::new() -> Self
+
+// Type aliases
+
+// Traits

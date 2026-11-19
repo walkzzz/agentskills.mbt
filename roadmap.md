@@ -94,7 +94,7 @@
 | F11 | GB/Z 185 本地模式 | 0.1.0 | ⬜ |
 | F12 | GB/Z 185 互联模式 | 1.0.0 | ⬜ |
 | F13 | 18 内置工具 | 0.1.0 | ⬜ |
-| F14 | HTTPS 服务与 WebMCP | 0.1.0 | ⬜ |
+| F14 | HTTPS 服务与 WebMCP | 0.1.0 | 🔶 API 面落地：`server` 包 HTTP 契约（HttpRequest/HttpResponse + ok/404/405）+ `Router` 分发核（精确/前缀，命中路径方法不符 → 405）+ SSE 事件编码核（多行 data）；HTTPS 传输（@async socket+TLS）与 WebMCP 描述面 ⬜ |
 | F15 | CLI 单二进制 [E10] | 0.1.0 | ⬜ |
 | F16 | 四目标 + 浏览器运行时 [E1] | 0.1.0/1.0.0 | ⬜（aip 包已验证四目标编译路径） |
 
