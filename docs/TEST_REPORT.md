@@ -12,6 +12,17 @@
 | **变异测试** | **24 变异点 / 7 功能域** | **24/24 KILLED（击杀率 100%）** |
 | 覆盖率 | `moon coverage analyze`（WSL 通道） | **29 uncovered / 4 files**——库代码仅 3 行未覆盖（frontmatter 1 + jsonl 2）；cli 4 + interconnect_demo 22 属演示代码 |
 
+## 形式化验证（moon prove，2026-11-19）
+
+| 项 | 结果 |
+| --- | --- |
+| 通道 | WSL（Z3 4.8.12）——Windows 本地有 `\\?` mkdir 平台 bug |
+| 目标包 | `verify/proof`（`proof_enabled = true`） |
+| 结果 | **8 goals proved / 1 of 1 packages proved** |
+| 契约核 | `gas_after`（燃料账本推进）· `gas_after_never_exceeds`（燃料不超限）· `dropped`（占位计数）· `dropped_positive`（占位为正）· `allowed`（授权判定）· `admin_grants_confidential` · `viewer_denied_confidential` · `operator_boundary_exact` |
+| 方法 | 契约式纯函数核（`proof_require`/`proof_ensure`）；真实实现（GasMeter / compact / can_access）由测试对齐核（model-based oracle）——与 gbz185 的「已证明=已使用」两类证据并列记录 |
+| 交叉 | gbz185.mbt：**20 obligations proved / 13 verified functions**（独立仓，CI prove job 实测） |
+
 ## 变异矩阵（24 点）
 
 | 编号 | 目标域 |

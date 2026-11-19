@@ -54,6 +54,28 @@ jobs:
       - name: Fail on .mbti drift
         run: git diff --exit-code
 
+  prove:
+    name: moon prove (Why3 + Z3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit + update registry (retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- "$MOONBIT_VERSION"
+            echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+            "$HOME/.moon/bin/moon" update
+      - name: Install Z3
+        run: sudo apt-get update && sudo apt-get install -y z3
+      - name: moon prove (workspace member verify)
+        run: |
+          cd verify
+          moon prove
+
   test-native:
     name: moon test --target native (${{ matrix.os }})
     strategy:

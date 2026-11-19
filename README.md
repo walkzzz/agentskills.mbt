@@ -18,7 +18,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | --- | --- |
 | **agentskills**（主模块） | **F01** SKILL.md 解析（moonyaml→SkillManifest+validate）· **F02** SkillRegistry（渐进加载状态机，Kernel 式纯函数域）· **F03** tooling_bridge（GB/Z 185.7 单源映射）· **F04** RAG（BM25+RRF）· **F05** compactor（Unicode 安全截断）· **F06** RBAC（三级敏感+审计）· **F07** 认证（bcrypt+HS256 JWT）· **F08** 存储（内存+JSONL+async IO）· **F09** 沙箱 API（GasMeter）· **F14** 服务端 API（Router+SSE）· **F15** CLI |
 | **verify** | fixture 资产 + **差分层**：known_failure 隔离机制（与上游语义分歧登记即跳过，修复后断言自动生效）+ 冻结期望差分测试 |
-| **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)**（独立仓，已发布 mooncakes） | GB/Z 185-2026《人工智能 智能体互联》协议栈全 7 部分 + 形式化验证（moon prove 3 goals proved） |
+| **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)**（独立仓，已发布 mooncakes） | GB/Z 185-2026《人工智能 智能体互联》协议栈全 7 部分 + 形式化验证（moon prove 20 obligations proved / 13 verified functions） |
 
 架构采用**三层执行模型**（吸收 posoco 实战范式）：Kernel 式纯函数域（`skill/`）→ 运行时壳（`cli/`）→ 互联协议栈（gbz185 仓）——"有状态"与"纯函数"彻底分离，组合失败即 fail-fast。
 
@@ -54,10 +54,17 @@ moon update
 
 注册（GB/Z 185.3）→ 发现（185.5）→ 单播直连 → 群组扇出（185.6）→ **变异信封现场拒收（防重放）** → 状态机不变量——全部经 gbz185 协议栈的形式化证明背书。
 
+## 质量与验证
+
+- 测试 **45/45**（四目标；CI 全绿——check/contract/**prove**/native×3/portable×3/**coverage**）
+- 变异 **24/24 KILLED**（7 功能域）；覆盖率库代码仅 3 行未覆盖（[docs/TEST_REPORT.md](docs/TEST_REPORT.md)）
+- **形式化验证：`verify/proof` `proof_enabled`——moon prove 8 goals proved**（Why3 + Z3：燃料账本 `gas_after`/占位计数 `dropped`/RBAC 授权 `allowed` 等契约核）
+- 本地 CI 与 `.github/workflows/ci.yml` 对齐：`bash scripts/local_ci.sh`（prove 走 WSL 通道；`--quick` 跳过变异/覆盖率慢项）
+
 ## 能力与边界
 
-- **定位即库+运行时骨架**：F01/F02/F03 核心链路已通；CLI 子命令面、文件系统读、MCP 适配器按 roadmap 排期落地（见 `roadmap.md`）。
-- 差分层就位但样本尚少（3/40，见 [docs/known-gaps.md](docs/known-gaps.md) GAP-3）。
+- **功能面**：F01–F09 + F14 全部 🔶 就绪（解析/注册表/工具桥接/RAG/压缩/RBAC/认证/存储/沙箱 API/服务端 API）+ F15 CLI + F17 互联演示；CLI 子命令面与 MCP 适配器按 roadmap 排期。
+- 差分层 **42/40 达成**（上游全量 SKILL.md 冻结，含 1 登记分歧 BUG-001——见 [docs/known-gaps.md](docs/known-gaps.md)）。
 - **不含**：MQ 分发、国密互联安全层（gbz185 仓 0.2.0 路线）。
 - 完整真话台账见 [docs/known-gaps.md](docs/known-gaps.md)；milestone 真相源见 `roadmap.md`。
 
@@ -77,7 +84,7 @@ MoonBit full port of the **SKILL.md standard skill runtime** (upstream: UCToo/ag
 | --- | --- |
 | **agentskills** (main module) | **F01** SKILL.md parsing (moonyaml frontmatter → SkillManifest + validate) → **F02** SkillRegistry (progressive-loading state machine, kernel-style pure functional domain) → **F03** tooling_bridge (SkillTool trait → GB/Z 185.7 ToolDescriptor single-source mapping) → CLI |
 | **verify** | fixture assets + **differential layer**: known_failure quarantine (upstream semantic divergences registered by id, assertions auto-revive on fix) + frozen-expectation differential tests |
-| **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)** (standalone repo, published on mooncakes) | GB/Z 185-2026 agent-interconnection protocol stack, Parts 1-7, with formal verification (moon prove, 3 goals proved) |
+| **[gbz185.mbt](https://github.com/walkzzz/gbz185.mbt)** (standalone repo, published on mooncakes) | GB/Z 185-2026 agent-interconnection protocol stack, Parts 1-7, with formal verification (moon prove, 20 obligations proved / 13 verified functions) |
 
 Architecture follows the **three-layer execution model** (absorbed from posoco): kernel-style pure domain (`skill/`) → runtime shell (`cli/`) → interconnect protocol stack (gbz185) — stateful and pure separation, fail-fast composition.
 
@@ -99,10 +106,17 @@ moon add walkzzz/agentskills.mbt
 moon update
 ```
 
+### Quality & verification
+
+- Tests **45/45** (four targets; CI green — check/contract/**prove**/native×3/portable×3/**coverage**)
+- Mutation **24/24 KILLED** (7 domains); coverage: only 3 library lines uncovered ([docs/TEST_REPORT.md](docs/TEST_REPORT.md))
+- **Formal verification: `verify/proof` `proof_enabled` — moon prove 8 goals proved** (Why3 + Z3: gas ledger `gas_after`, compaction `dropped`, RBAC `allowed` cores)
+- Local CI mirrors `.github/workflows/ci.yml`: `bash scripts/local_ci.sh` (prove via WSL; `--quick` skips slow items)
+
 ### Capabilities & boundaries
 
-- **Library + runtime skeleton**: the F01/F02/F03 core chain is live; CLI subcommands, filesystem reads, and the MCP adapter land per `roadmap.md`.
-- Differential layer is live with a small sample set (3/40, see [docs/known-gaps.md](docs/known-gaps.md) GAP-3).
+- **Function surface**: F01–F09 + F14 all 🔶 (parse/registry/tooling bridge/RAG/compaction/RBAC/auth/storage/sandbox API/server API) + F15 CLI + F17 interconnect demo; CLI subcommands and MCP adapter land per `roadmap.md`.
+- Differential layer **42/40 achieved** (full upstream SKILL.md frozen, 1 registered divergence BUG-001 — see [docs/known-gaps.md](docs/known-gaps.md)).
 - **Not included**: MQ fan-out, SM-suite interconnect security (gbz185 0.2.0 roadmap).
 - Full honest ledger: [docs/known-gaps.md](docs/known-gaps.md); milestone source of truth: `roadmap.md`.
 

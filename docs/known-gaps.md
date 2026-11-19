@@ -23,5 +23,5 @@
 ## 测试口径
 
 - **45/45 为 native 目标实测**（2026-11-19）：skill/rag/auth/rbac/compactor/storage/sandbox/server 全包覆盖（含 6 个 quickcheck 属性、差分层 42 fixtures、JSONL 往返、RBAC 矩阵、HS256、沙箱燃料、HTTP 路由/SSE 编码、frontmatter 错误分支）；js / wasm / wasm-gc 与 native×3 OS 经 CI 实测绿。
-- 变异测试 **24/24 KILLED**（7 功能域，scripts/mutation_test.mbtx）；覆盖率 `moon coverage analyze` 库代码仅 3 行未覆盖（WSL 通道——Windows 本地有路径拼接 bug）；数字一致性门禁 `scripts/repo_stats.sh`；完整矩阵见 docs/TEST_REPORT.md。
+- 变异测试 **24/24 KILLED**（7 功能域，scripts/mutation_test.mbtx）；覆盖率 `moon coverage analyze` 库代码仅 3 行未覆盖（WSL 通道——Windows 本地有路径拼接 bug）；**形式化验证 `verify/proof` 8 goals proved**（moon prove/WSL；契约核：燃料账本/占位计数/RBAC 授权）；数字一致性门禁 `scripts/repo_stats.sh`；本地 CI `scripts/local_ci.sh` 与 CI jobs 对齐；完整矩阵见 docs/TEST_REPORT.md。
 - `examples/storage_jsonl_demo` 与 `examples/interconnect_demo` 为运行级验证（moon run 实测输出见 README）。

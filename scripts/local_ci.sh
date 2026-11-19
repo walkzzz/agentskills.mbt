@@ -25,6 +25,14 @@ git diff --exit-code --stat || { echo "FAILED: mbti drift（运行 moon info 并
 step "repo_stats：数字一致性门禁"
 run bash scripts/repo_stats.sh
 
+step "prove：moon prove 8 goals（WSL 通道——Windows 本地有 \\\\? mkdir bug）"
+WSL_VERIFY="${WSL_VERIFY:-/mnt/e/AA_WP/forMoonHankson/agentskills.mbt/verify}"
+if command -v wsl >/dev/null 2>&1; then
+  wsl -e bash -c "cd '$WSL_VERIFY' && ~/.moon/bin/moon prove" || { echo "FAILED: moon prove"; FAIL=1; }
+else
+  echo "WARN: 未检测到 wsl——prove 跳过（可用 WSL_VERIFY 指定模块根）"
+fi
+
 if [ "${1:-}" != "--quick" ]; then
   step "coverage：moon coverage analyze（WSL 通道——Windows 本地有路径拼接 bug）"
   WSL_DIR="${WSL_DIR:-/mnt/e/AA_WP/forMoonHankson/agentskills.mbt/agentskills}"

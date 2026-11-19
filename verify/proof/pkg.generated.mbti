@@ -1,0 +1,39 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills-verify/proof"
+
+// Values
+pub const ROLE_ADMIN : Int32 = 2
+
+pub const ROLE_OPERATOR : Int32 = 1
+
+pub const ROLE_VIEWER : Int32 = 0
+
+pub const SENS_CONFIDENTIAL : Int32 = 2
+
+pub const SENS_INTERNAL : Int32 = 1
+
+pub const SENS_PUBLIC : Int32 = 0
+
+pub fn admin_grants_confidential() -> Bool
+
+pub fn allowed(Int32, Int32) -> Bool
+
+pub fn dropped(Int32, Int32) -> Int32
+
+pub fn dropped_positive(Int32, Int32) -> Bool
+
+pub fn gas_after(Int64, Int64) -> Int64
+
+pub fn gas_after_never_exceeds(Int64, Int64, Int64) -> Bool
+
+pub fn operator_boundary_exact() -> Bool
+
+pub fn viewer_denied_confidential() -> Bool
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
