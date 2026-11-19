@@ -2,6 +2,13 @@
 package "walkzzz/agentskills.mbt/storage"
 
 // Values
+pub fn encode_all(Array[(String, String)]) -> String
+
+pub fn encode_line(String, String) -> String
+
+pub fn parse_all(String) -> Array[(String, String)]
+
+pub fn parse_line(String) -> (String, String)?
 
 // Errors
 

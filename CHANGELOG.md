@@ -20,6 +20,7 @@
 - **F06 RBAC 三级敏感 + 审计**：`rbac` 包（Kernel 式纯函数域）——`Sensitivity`（Public/Internal/Confidential）× `Role`（Viewer/Operator/Admin）授权矩阵 `can_access` + `Auditor` 单调审计日志（seq 自增，无 IO）。
 - **F05 compactor 上下文压缩**：`compactor` 包——确定性裁剪（system 全保留 + 最近 N 条 + 计数占位）+ `fit_budget` 单消息预算 + **Unicode 安全截断（E7：按 codepoint，绝不劈开多字节字符）**。
 - **F08 存储抽象（核心）**：`storage` 包——`Storage` pub(open) trait（get/put/delete/all_keys/count）+ `MemoryStorage` 内存实现（四目标）+ `extend` 方法提升；JSONL/PostgreSQL 后端随 native 集成。
+- **F08 存储后端（JSONL 编解码核）**：`jsonl.mbt`——`encode_line`/`parse_line`（引号/反斜杠/换行/制表/回车转义对称，中文/emoji 往返）+ `encode_all`/`parse_all`（空行/坏行容错）；文件 IO wrapper 随 native @fs 集成。
 - `docs/known-gaps.md` 真话台账（6 条 GAP 如实登记）。
 - CI 模板（ci.yml，复用 gbz185 三轮修复成果：retry@v3 语法/Windows 显式 zip/版本锁定）。
 
@@ -35,5 +36,5 @@
 
 ### Verified
 
-- `moon check --deny-warn` 干净；`moon test` 28/28（native，2026-11-19，含 quickcheck 属性、RAG、bcrypt、RBAC、HS256、compactor Unicode 截断、存储契约）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 14/14 KILLED（击杀率 100%，scripts/mutation_test.mbtx）**。
+- `moon check --deny-warn` 干净；`moon test` 32/32（native，2026-11-19，含 quickcheck 属性、RAG、bcrypt、RBAC、HS256、compactor Unicode 截断、存储契约、JSONL 编解码往返）；差分层 42 fixtures 全绿（含 1 登记分歧）；**变异测试 14/14 KILLED（击杀率 100%，scripts/mutation_test.mbtx）**。
 - 依赖：`walkzzz/gbz185.mbt@0.1.0`（mooncakes 已发布，国标协议栈 13 verified functions / 20 obligations machine-proved）。
