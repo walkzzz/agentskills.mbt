@@ -53,6 +53,7 @@
 ## 运行级验证
 
 - `examples/interconnect_demo`：双智能体互连五环节（ATR 注册→ADP 发现→单播→群组扇出→变异信封拒收→不变量）OK
+- `examples/storage_pg_demo`：**PostgreSQL 18.4 真实联测**——UPSERT / 中文多行/制表往返 / DELETE RETURNING / count / clear 全绿（EXIT 0）；凭据经 `PG_PASSWORD` 环境变量（密码不入库）；沙箱内 `moon run` 有网络拦截 → 联测经 `moon build` + 直接执行 exe
 - `examples/storage_jsonl_demo`：JSONL 往返 OK（中文/多行/制表）
 
 ## 环境差异（诚实台账）

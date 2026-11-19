@@ -22,6 +22,7 @@
 - **F08 存储抽象（核心）**：`storage` 包——`Storage` pub(open) trait（get/put/delete/all_keys/count）+ `MemoryStorage` 内存实现（四目标）+ `extend` 方法提升；JSONL/PostgreSQL 后端随 native 集成。
 - **F08 存储后端（JSONL 编解码核）**：`jsonl.mbt`——`encode_line`/`parse_line`（引号/反斜杠/换行/制表/回车转义对称，中文/emoji 往返）+ `encode_all`/`parse_all`（空行/坏行容错）；文件 IO wrapper 随 native @fs 集成。
 - **F08 存储 IO wrapper**：`jsonl_io.mbt`——async `save_jsonl`/`load_jsonl`（薄 IO 层复用已测编解码核，@fs 整文件读写）；`examples/storage_jsonl_demo` 运行级验证往返 OK；async 依赖接入后 native 37/37 保持全绿。
+- **F08 PostgreSQL 后端**：`storage_pg`（native-only）——pgpool 连接池 + 任务组驱动 PoolExecutor（`with_pg_storage`）+ kv 表（UPSERT / SELECT / DELETE RETURNING / count / clear）；**真实 PG 18.4 联测**（`examples/storage_pg_demo`：中文多行往返、覆盖写、删除幂等、清空全绿，EXIT 0）；凭据经 `PG_PASSWORD` 环境变量（密码不入仓库）。
 - **F09 沙箱 API 面**：`sandbox` 包——`Sandbox` pub(open) trait（模块字节+入口+参数+燃料 → 分型结果）+ `GasMeter` 燃料计量（限额/消耗/耗尽/负额拒绝，纯逻辑）+ `StubSandbox` 确定性桩（空模块/零燃料/缺入口全分型）；wasmoon 运行时注入随 W10。
 - **F09 执行器① js WebAssembly**：`sandbox_js` 包（js-only）——extern "js" 同步 `WebAssembly.Module/Instance` + 全局句柄表 + JSON 参数桥；`WasmJsSandbox` 实现 `Sandbox` 契约（无效模块/缺导出/燃料耗尽分型）；**echo(42)=42 实测**，js 目标 46/46。诚实边界：js 执行器不做逐指令燃料计量（WebAssembly 无 gas 钩子）。
 - **F14 服务端 API 面**：`server` 包——HTTP 契约（HttpRequest/HttpResponse + ok/404/405）+ `Router` 分发核（精确/前缀匹配，路径命中方法不符 → 405）+ **SSE 事件编码核**（多行 data 逐行前缀）；HTTPS 传输（@async socket+TLS）与 WebMCP 描述面随 native 集成。

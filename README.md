@@ -49,7 +49,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | 上下文压缩（确定性裁剪 + Unicode 安全截断） | ✅ |
 | RBAC 三级敏感授权 + 单调审计日志 | ✅ |
 | 认证（bcrypt 口令 + HS256 JWT，不自研密码学） | ✅ |
-| 存储抽象（内存 / JSONL 编解码 / async 文件 IO） | ✅ |
+| 存储抽象（内存 / JSONL 编解码 / async 文件 IO / **PostgreSQL**——真实 PG 18.4 联测） | ✅ |
 | 沙箱 API + 燃料计量（形式化契约核）+ **js WebAssembly 执行器**（echo(42)=42 实测） | ✅ |
 | 服务端 API（HTTP 契约 + Router + SSE 编码） | ✅ |
 | 双智能体互联演示（GB/Z 185.3/185.5/185.6 全流程） | ✅ |

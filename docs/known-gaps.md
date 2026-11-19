@@ -13,6 +13,7 @@
 | GAP-4 | F02 渐进加载的 Metadata→FullyLoaded 升格路径未接文件消费（GAP-2 闭环后前提已具备） | F02 完整面 | LoadLevel 状态机就位；升格接 `load_jsonl`/文件读随 CLI skill load 子命令落地 |
 | GAP-5 | F03 MCP 面（to_mcp_entry 的 server 侧暴露）未实现 | F03 完整面 | W9 mcp 家族集成时落地；单源映射已通（gbz185 ToolRegistry 桥接） |
 | GAP-7 | F09 执行器覆盖：wasmoon 完整集成 = **编译器级依赖链**（wasmoon + milkir + wasmoon_jit + wasm_milkir 四模块，2026-11-19 侦察确认） | F09 三执行器（wasm 沙箱实际执行） | 三执行器策略：①**js WebAssembly ✅ 已落地**（`sandbox_js`，js-only；echo(42)=42 实测；js 执行器**不做逐指令燃料计量**——WebAssembly 无 gas 钩子，gas≤0 判 OutOfGas，精确计量归 wasmoon）②@process 进程隔离 ③wasmoon JIT 完整集成随 W10 排期 |
+| GAP-8 | F08 PG 后端与同步 `Storage` trait 的接口差：PG 全 async（pgpool），trait 为同步契约（内存/文件） | 存储后端统一性 | `storage_pg` 提供 **async 独立 API**（`with_pg_storage` + kv_*，联测绿），**不硬套同步 trait**；运行时壳统一注入时为 trait 增加 async 变体（或适配层）。SQL 值经单引号转义拼接（联测用途；参数化准备语句留后续）。联测通道：`moon build` + 直接执行 exe（沙箱对 `moon run` 有网络拦截） |
 
 ## 平台与工具链
 

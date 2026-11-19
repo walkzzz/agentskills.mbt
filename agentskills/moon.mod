@@ -16,4 +16,5 @@ import {
   "moonbitstack/mooncred@0.8.1",
   "moonbitstack/mooncrypt@0.5.2",
   "moonbitlang/async@0.22.9",
+  "moonbit-community/postgres@0.1.3",
 }
