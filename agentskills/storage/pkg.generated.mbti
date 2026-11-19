@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/storage"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct MemoryStorage {
+  map : Map[String, String]
+}
+pub fn MemoryStorage::all_keys(Self) -> Array[String]
+pub fn MemoryStorage::count(Self) -> Int32
+pub fn MemoryStorage::delete(Self, String) -> Bool
+pub fn MemoryStorage::get(Self, String) -> String?
+pub fn MemoryStorage::new() -> Self
+pub fn MemoryStorage::put(Self, String, String) -> Unit
+
+// Type aliases
+
+// Traits
+pub(open) trait Storage {
+  fn get(Self, String) -> String?
+  fn put(Self, String, String) -> Unit
+  fn delete(Self, String) -> Bool
+  fn all_keys(Self) -> Array[String]
+  fn count(Self) -> Int32
+}

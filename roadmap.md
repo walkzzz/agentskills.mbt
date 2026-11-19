@@ -88,7 +88,7 @@
 | F05 | compactor 上下文压缩 | 1.0.0 | 🔶 `compactor` 包落地：确定性裁剪（system 保留 + 最近 N + 计数占位）+ 单消息预算 + Unicode 安全截断（E7 落实，3 测试）；LLM 摘要注入随运行时壳 ⬜ |
 | F06 | RBAC 三级敏感 + 审计 | 0.1.0 | 🔶 `rbac` 包落地：三级敏感 × 三角色授权矩阵 `can_access`（纯函数）+ `Auditor` 单调审计日志（2 测试 13 断言）；高危二次确认随运行时壳 ⬜ |
 | F07 | 认证（JWT+口令） | 0.1.0 | 🔶 口令面（`auth` bcrypt 封装，委托官方 moonbitlang/x）+ **JWT 面（HS256 签发/校验，mooncred 0.8.1 + mooncrypt HMAC，Clock 纯值注入）**；4 测试往返/盐差异/签发校验/篡改拒收 |
-| F08 | 存储抽象（内存/文件/PG） | 0.1.0/1.0.0 | ⬜ |
+| F08 | 存储抽象（内存/文件/PG） | 0.1.0/1.0.0 | 🔶 `storage` 包核心：Storage pub(open) trait + MemoryStorage（四目标，契约测试覆盖覆盖写/删除语义/键排序）；JSONL（native @fs）与 PostgreSQL（moonbit-community/postgres）后端 ⬜ |
 | F09 | WASM 沙箱三执行器 | 1.0.0 | ⬜ |
 | F10 | MoonBit 技能 wasm-gc 组件通道 [E2] | 1.0.0 | ⬜ |
 | F11 | GB/Z 185 本地模式 | 0.1.0 | ⬜ |
