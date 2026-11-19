@@ -33,14 +33,28 @@ if 'walkzzz/agentskills.mbt' not in text:
         text = text.rstrip() + '\n\nimport {\n  "walkzzz/agentskills.mbt@0.1.0",\n}\n'
     open(mod_path, 'w', encoding='utf-8', newline='\n').write(text)
 
-# 2) skill-api 包的 stub 实现（包路径按 WIT package/interface 生成）
-stub_dir = os.path.join(comp, 'gen', 'interface', 'walkzzz', 'agentskills', 'skill_api')
+# 2) skill-api 包的 stub 实现（新 wit-bindgen 结构：连字符目录 + top.mbt 实装）
+stub_dir = os.path.join(comp, 'gen', 'interface', 'walkzzz', 'agentskills', 'skill-api')
 os.makedirs(stub_dir, exist_ok=True)
+
+# skill-api 包 moon.pkg 注入已发布运行时依赖
+pkg_path = os.path.join(stub_dir, 'moon.pkg')
+if os.path.exists(pkg_path):
+    t = open(pkg_path, encoding='utf-8').read()
+    if '@skill' not in t:
+        if 'import {' in t:
+            t = t.replace('import {', 'import {\n  "walkzzz/agentskills.mbt/skill" @skill,', 1)
+        else:
+            t = t + '\nimport {\n  "walkzzz/agentskills.mbt/skill" @skill,\n}\n'
+        open(pkg_path, 'w', encoding='utf-8', newline='\n').write(t)
+stub_path = os.path.join(stub_dir, 'top.mbt')
+if not os.path.exists(stub_path):
+    stub_path = os.path.join(stub_dir, 'stub.mbt')
 stub = '''// 实现由 scripts/component_build.sh 写入（薄包装 @agentskills 已发布运行时）。
 
 ///|
 pub fn parse_name(skill_md : String) -> String {
-  match @agentskills.parse_skill_md(skill_md) {
+  match @skill.parse_skill_md(skill_md) {
     Ok((m, _body)) => m.name
     Err(_) => ""
   }
@@ -48,7 +62,7 @@ pub fn parse_name(skill_md : String) -> String {
 
 ///|
 pub fn parse_description(skill_md : String) -> String {
-  match @agentskills.parse_skill_md(skill_md) {
+  match @skill.parse_skill_md(skill_md) {
     Ok((m, _body)) => m.description
     Err(_) => ""
   }
@@ -56,7 +70,7 @@ pub fn parse_description(skill_md : String) -> String {
 
 ///|
 pub fn validate(skill_md : String) -> String {
-  match @agentskills.parse_skill_md(skill_md) {
+  match @skill.parse_skill_md(skill_md) {
     Ok(_) => ""
     Err(e) => e
   }
@@ -72,7 +86,7 @@ pub fn rrf_score(rank : UInt32, k : UInt32) -> Double {
   1.0 / (k.to_double() + rank.to_double())
 }
 '''
-open(os.path.join(stub_dir, 'stub.mbt'), 'w', encoding='utf-8', newline='\n').write(stub)
+open(stub_path, 'w', encoding='utf-8', newline='\n').write(stub)
 
 # 3) 若生成的包结构使用 @skill 命名空间则无需改动——由 wit-bindgen 决定导出点
 print('patched', comp)
@@ -80,8 +94,8 @@ PY
 
 # 构建 wasm 模块（gen 包的 link.exports 由 wit-bindgen 生成）
 cd "$COMP"
-moon build --target wasm
-WASM=$(_build_path=; find _build/wasm/release/build/gen -name 'gen.wasm' | head -1)
+moon build --release --target wasm
+WASM=$(_build_path=; find _build -name 'gen.wasm' | head -1 | head -1)
 if [ -z "${WASM:-}" ]; then
   echo "ERROR: gen.wasm not found" >&2
   exit 1
