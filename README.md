@@ -3,7 +3,7 @@
 <p align="left">
   <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="MoonBit" src="https://img.shields.io/badge/MoonBit-%E6%9C%88%E5%85%94-purple">
-  <img alt="Tests" src="https://img.shields.io/badge/tests-32%2F32%20passing-brightgreen">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-35%2F35%20passing-brightgreen">
   <img alt="Standard" src="https://img.shields.io/badge/SKILL.md-standard-teal">
   <img alt="GBZ" src="https://img.shields.io/badge/GB%2FZ%20185--2026-%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%92%E8%81%94-red">
 </p>
@@ -28,7 +28,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 git clone https://github.com/walkzzz/agentskills.mbt.git
 cd agentskills.mbt
 moon check --deny-warn        # 四目标零警告门禁
-moon test                     # 32/32（2026-11-19 实测）
+moon test                     # 35/35（2026-11-19 实测）
 moon run cli                  # F01 解析 → F02 注册 端到端演示
 moon run examples/interconnect_demo   # 双智能体互联演示（sans-I/O 零网络依赖）
 ```
@@ -87,7 +87,7 @@ Architecture follows the **three-layer execution model** (absorbed from posoco):
 git clone https://github.com/walkzzz/agentskills.mbt.git
 cd agentskills.mbt
 moon check --deny-warn        # zero warnings across four targets
-moon test                     # 32/32 (measured 2026-11-19)
+moon test                     # 35/35 (measured 2026-11-19)
 moon run cli                  # F01 parse → F02 register end-to-end demo
 moon run examples/interconnect_demo   # two-agent interconnect demo (sans-I/O, no network)
 ```

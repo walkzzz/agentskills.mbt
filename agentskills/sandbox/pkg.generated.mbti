@@ -1,0 +1,40 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/sandbox"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct GasMeter {
+  limit : Int64
+  mut used : Int64
+}
+pub fn GasMeter::consume(Self, Int64) -> Bool
+pub fn GasMeter::exhausted(Self) -> Bool
+pub fn GasMeter::new(Int64) -> Self
+pub fn GasMeter::remaining(Self) -> Int64
+
+pub(all) enum SandboxResult {
+  Succeeded(@json.Json)
+  OutOfGas
+  Failed(String)
+}
+
+pub struct StubSandbox {
+  mut calls : Int32
+}
+pub fn StubSandbox::call_count(Self) -> Int32
+pub fn StubSandbox::execute(Self, Bytes, String, @json.Json, Int64) -> SandboxResult
+pub fn StubSandbox::new() -> Self
+
+// Type aliases
+
+// Traits
+pub(open) trait Sandbox {
+  fn execute(Self, Bytes, String, @json.Json, Int64) -> SandboxResult
+}
