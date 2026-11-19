@@ -6,9 +6,9 @@
 
 | 层 | 规模 | 结果 |
 | --- | --- | --- |
-| 单元/差分测试 | **43 test 块** | 43/43 绿（native 本地实测；js / wasm / wasm-gc / native×3 OS 经 CI 实测绿——8/8 job） |
+| 单元/差分测试 | **45 test 块** | 45/45 绿（native 本地实测；js / wasm / wasm-gc / native×3 OS 经 CI 实测绿——8/8 job） |
 | 差分层（对上游） | **42 上游真实 fixtures** | 全绿（含 BUG-001 known_failure 隔离） |
-| 属性测试 | 4 quickcheck（seed 2026–2029 固定） | 全绿可复现 |
+| 属性测试 | 6 quickcheck（seed 2026–2032 固定；skill×4 + rag×2） | 全绿可复现 |
 | **变异测试** | **24 变异点 / 7 功能域** | **24/24 KILLED（击杀率 100%）** |
 | 覆盖率 | `moon coverage analyze`（WSL 通道） | **29 uncovered / 4 files**——库代码仅 3 行未覆盖（frontmatter 1 + jsonl 2）；cli 4 + interconnect_demo 22 属演示代码 |
 

@@ -1,3 +1,7 @@
 import {
   "niuniu513-ask/MoonRetrieve" @moonretrieve,
 }
+
+import {
+  "moonbitlang/core/quickcheck",
+} for "test"
