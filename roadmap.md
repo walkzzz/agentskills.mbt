@@ -85,7 +85,7 @@
 | F02 | 技能注册表与渐进加载 | 0.1.0 | 🔶 SkillRegistry Kernel 式纯函数域落地（register/lookup/count + LoadLevel 状态机，同名冲突 fail-fast）；文件加载 ⬜ |
 | F03 | 技能→工具适配器（MCP 面） | 0.1.0 | 🔶 tooling_bridge 落地（SkillTool trait + to_descriptor 单源映射 + register_skill_tool 桥入 gbz185 ToolRegistry，1 测试走通 invoke/审计）；MCP 面随 W9 ⬜ |
 | F04 | RAG 混合检索（BM25+RRF+HNSW） | 0.1.0 核心 | 🔶 `rag` 包落地：MoonRetrieve BM25（中英分词）+ `rrf_fuse`（k=60）+ RankedHit（18/18 测试含融合手工期望）；moonhnsw 向量路与 LLM 重排注入随 W7-W8 ⬜ |
-| F05 | compactor 上下文压缩 | 1.0.0 | ⬜ |
+| F05 | compactor 上下文压缩 | 1.0.0 | 🔶 `compactor` 包落地：确定性裁剪（system 保留 + 最近 N + 计数占位）+ 单消息预算 + Unicode 安全截断（E7 落实，3 测试）；LLM 摘要注入随运行时壳 ⬜ |
 | F06 | RBAC 三级敏感 + 审计 | 0.1.0 | 🔶 `rbac` 包落地：三级敏感 × 三角色授权矩阵 `can_access`（纯函数）+ `Auditor` 单调审计日志（2 测试 13 断言）；高危二次确认随运行时壳 ⬜ |
 | F07 | 认证（JWT+口令） | 0.1.0 | 🔶 口令面（`auth` bcrypt 封装，委托官方 moonbitlang/x）+ **JWT 面（HS256 签发/校验，mooncred 0.8.1 + mooncrypt HMAC，Clock 纯值注入）**；4 测试往返/盐差异/签发校验/篡改拒收 |
 | F08 | 存储抽象（内存/文件/PG） | 0.1.0/1.0.0 | ⬜ |

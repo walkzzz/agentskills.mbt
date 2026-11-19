@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/compactor"
+
+// Values
+pub fn compact(Array[Message], keep_recent? : Int32) -> Array[Message]
+
+pub fn fit_budget(Array[Message], max_chars? : Int32) -> Array[Message]
+
+pub fn truncate_chars(String, Int32) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct Message {
+  role : String
+  content : String
+}
+
+// Type aliases
+
+// Traits
