@@ -1,0 +1,42 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/rbac"
+
+// Values
+pub fn can_access(Role, Sensitivity) -> Bool
+
+pub fn max_sensitivity(Role) -> Sensitivity
+
+// Errors
+
+// Types and methods
+pub(all) struct AuditRecord {
+  seq : Int64
+  actor : String
+  action : String
+  allowed : Bool
+}
+
+pub struct Auditor {
+  mut next_seq : Int64
+  records : Array[AuditRecord]
+}
+pub fn Auditor::count(Self) -> Int32
+pub fn Auditor::log(Self) -> Array[AuditRecord]
+pub fn Auditor::new() -> Self
+pub fn Auditor::record(Self, String, String, Bool) -> AuditRecord
+
+pub(all) enum Role {
+  Viewer
+  Operator
+  Admin
+}
+
+pub(all) enum Sensitivity {
+  Public
+  Internal
+  Confidential
+}
+
+// Type aliases
+
+// Traits
