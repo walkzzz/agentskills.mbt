@@ -73,9 +73,7 @@ pub async fn kv_put(pool : @pgpool.Pool, k : String, v : String) -> Unit {
 ///|
 ///kv_get — 读取（缺失返回 None）。
 pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? {
-  let rows = pool.query_all(
-    "SELECT v FROM agentskills_kv WHERE k = '" + sql_escape(k) + "'",
-  )
+  let rows = pool.query_all("SELECT v FROM agentskills_kv WHERE " + kv_where(k))
   if rows.length() == 0 {
     None
   } else {
@@ -86,9 +84,7 @@ pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? {
 ///|
 ///kv_delete — 删除（存在则 true）。
 pub async fn kv_delete(pool : @pgpool.Pool, k : String) -> Bool {
-  let rows = pool.query_all(
-    "DELETE FROM agentskills_kv WHERE k = '" + sql_escape(k) + "' RETURNING k",
-  )
+  let rows = pool.query_all("DELETE FROM agentskills_kv WHERE " + kv_where(k) + " RETURNING k")
   rows.length() > 0
 }
 
