@@ -23,7 +23,7 @@
 - F08 存储（内存 / JSONL / async 文件 / PostgreSQL）；
 - F09 沙箱 API + 燃料计量 + js WebAssembly 执行器；
 - F14 服务端 API（Router + SSE）；F15 CLI；
-- WIT 组件导出；`playground` 11 个浏览器导出；`docs/` 静态页面。
+- WIT 组件导出；`playground` 12 个浏览器导出；`docs/` 静态页面。
 
 ### 2.2 非目标
 

@@ -30,9 +30,9 @@
       <a class="brand" href="#top">
         <span class="brand-mark" aria-hidden="true">SK</span>
         <span class="brand-name">agentskills.mbt</span>
-        <span class="brand-ver">v0.2.0</span>
+        <span class="brand-ver">v0.2.1</span>
       </a>
-      <nav class="nav" aria-label="主导航">
+      <nav id="site-nav" class="nav" aria-label="主导航">
         <a href="#features">能力</a>
         <a href="#demo">在线演示</a>
         <a href="#start">快速开始</a>
@@ -41,6 +41,7 @@
         <a href="#docs">文档</a>
       </nav>
       <div class="topbar-actions">
+        <button id="nav-toggle" class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航" title="打开导航">☰</button>
         <button id="theme-toggle" class="icon-btn" type="button" title="切换深浅主题" aria-label="切换深浅主题">◐</button>
         <a class="gh-btn" href="https://github.com/walkzzz/agentskills.mbt" target="_blank" rel="noreferrer">GitHub</a>
       </div>
@@ -164,6 +165,7 @@ Body content here.</textarea>
           <div class="row">
             <button type="button" data-run="parse">解析</button>
             <button type="button" class="chip-btn" data-preset="bad">非法示例</button>
+            <button type="button" class="chip-btn" data-preset="reset-parse">恢复默认</button>
           </div>
           <div id="parse-out" class="out" aria-live="polite">等待解析…</div>
         </article>
@@ -189,6 +191,7 @@ Body content here.</textarea>
           <div class="row">
             <button type="button" data-run="validate">校验</button>
             <button type="button" class="chip-btn" data-preset="invalid">空 name 示例</button>
+            <button type="button" class="chip-btn" data-preset="reset-validate">恢复默认</button>
           </div>
           <div id="validate-out" class="out" aria-live="polite">等待校验…</div>
         </article>
@@ -241,7 +244,7 @@ Body content here.</textarea>
             <h3>上下文压缩</h3>
             <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>compact_demo</code></a>
           </header>
-          <p class="hint">保留全部 system + 最近 keep_recent 条对话；更早消息折叠为计数占位；逐条按 max_chars 截断。</p>
+          <p class="hint">保留全部 system + 最近 keep_recent 条对话；更早消息折叠为计数占位；逐条按 max_chars 截断。<strong>折叠无收益（占位更长）时自动跳过</strong>，输出含 <code>saved_chars</code> / <code>folded</code>。</p>
           <label>消息 JSON（role/content 数组）
             <textarea id="msgs" rows="6" spellcheck="false">[
   {"role":"system","content":"you are a helpful agent"},
@@ -263,10 +266,10 @@ Body content here.</textarea>
             <h3>Unicode 安全截断</h3>
             <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>truncate_text</code></a>
           </header>
-          <p class="hint">按 codepoint 截断，绝不劈开多字节字符；截断时追加省略号。</p>
+          <p class="hint">按 codepoint 截断，绝不劈开多字节字符；截断时追加省略号。<strong>max_chars 必须 ≥ 1</strong>（越界由页面拒绝；库层 ≤0 返回空串）。</p>
           <div class="row">
             <label class="grow">文本 <input id="trunc-text" value="你好世界，这是一个 Unicode 安全截断示例" /></label>
-            <label>max_chars <input id="trunc-n" value="8" inputmode="numeric" /></label>
+            <label>max_chars <input id="trunc-n" value="8" inputmode="numeric" min="1" step="1" /></label>
           </div>
           <div class="row">
             <button type="button" data-run="truncate">截断</button>
@@ -279,7 +282,7 @@ Body content here.</textarea>
             <h3>RRF 融合</h3>
             <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/performance.md" target="_blank" rel="noreferrer"><code>rrf_demo</code></a>
           </header>
-          <p class="hint">多路排名 → Σ 1/(k+rank)；分数降序，同分按 doc_id 升序 tie-break；top_n 为全量前缀。</p>
+          <p class="hint">多路排名 → Σ 1/(k+rank)；分数降序，同分按 doc_id 升序 tie-break；top_n 为全量前缀。<strong>k 必须 &gt; 0</strong>（否则分母为 0 产生 Infinity），k/top_n 为 int32 演示范围。</p>
           <label>rankings JSON
             <textarea id="rankings" rows="5" spellcheck="false">[
   ["skill-parse", "skill-registry", "skill-rbac"],
@@ -288,8 +291,8 @@ Body content here.</textarea>
 ]</textarea>
           </label>
           <div class="row">
-            <label>k <input id="rrf-k" value="60" inputmode="numeric" /></label>
-            <label>top_n <input id="rrf-top" value="5" inputmode="numeric" /></label>
+            <label>k <input id="rrf-k" value="60" inputmode="numeric" min="1" step="1" /></label>
+            <label>top_n <input id="rrf-top" value="5" inputmode="numeric" min="0" step="1" /></label>
             <button type="button" data-run="rrf">融合</button>
           </div>
           <div id="rrf-out" class="out" aria-live="polite">等待融合…</div>
@@ -300,7 +303,7 @@ Body content here.</textarea>
             <h3>工具 MCP 条目</h3>
             <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>tool_mcp_entry</code></a>
           </header>
-          <p class="hint">SkillTool → ToolDescriptor → MCP tools/list 条目（name / description / inputSchema）。</p>
+          <p class="hint">SkillTool → ToolDescriptor → MCP tools/list 条目（name / description / inputSchema）。<strong>name 非空且 ≤64、description 非空</strong>（与 gbz185 工具描述校验同口径）。</p>
           <div class="row">
             <label class="grow">工具名 <input id="tool-name" value="net_fetch" /></label>
             <label class="grow">描述 <input id="tool-desc" value="Fetch a URL" /></label>
@@ -316,7 +319,7 @@ Body content here.</textarea>
             <h3>字符预算统计</h3>
             <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>total_chars</code></a>
           </header>
-          <p class="hint">按 codepoint 汇总内容字符数（与 truncate_chars 同口径），用于预算诊断。</p>
+          <p class="hint">按 codepoint 汇总内容字符数（与 truncate_chars 同口径），用于预算诊断。<strong>错误分类</strong>：JSON 语法 / 非数组 / content 类型分别提示。</p>
           <label>消息 JSON
             <textarea id="chars-json" rows="4" spellcheck="false">[{"role":"user","content":"你好"},{"role":"assistant","content":"🙂🙂"}]</textarea>
           </label>
@@ -338,7 +341,7 @@ Body content here.</textarea>
         <div class="start-col">
           <div class="code">
             <div class="code-head"><span>安装</span><button type="button" class="copy" data-copy-target="cmd-install">复制</button></div>
-            <pre id="cmd-install"><code>moon add walkzzz/agentskills.mbt@0.2.0
+            <pre id="cmd-install"><code>moon add walkzzz/agentskills.mbt@0.2.1
 moon update</code></pre>
           </div>
           <div class="code">
@@ -444,7 +447,7 @@ auditor.denied_count()
         <p><strong>测试口径</strong>：native 61/61；js 62/62（含 js-only 执行器）；wasm / wasm-gc 各 61/61（2026-11-24 实测）。</p>
         <p><strong>变异与证明</strong>：24/24 KILLED（7 功能域）；<code>verify/proof</code> 8 goals proved（Why3 + Z3：燃料账本 / 占位计数 / RBAC 授权）。</p>
         <p><strong>Kernel 纯函数域</strong>：<code>skill/rag/rbac/compactor/storage</code> 无 IO、无时钟、无全局状态；可在 js / wasm 直接运行（本页即证）。</p>
-        <p><strong>演示口径</strong>：页面所有结果来自 <code>agentskills/playground</code> 的 11 个非 raise 导出，与库同一份源码。</p>
+        <p><strong>演示口径</strong>：页面所有结果来自 <code>agentskills/playground</code> 的 12 个非 raise 导出，与库同一份源码。</p>
       </div>
     </section>
 
@@ -473,7 +476,7 @@ auditor.denied_count()
         <h2>这是怎么在浏览器里跑的？</h2>
       </div>
       <ol class="steps">
-        <li><span class="step-no">1</span><p><code>agentskills/playground</code> 是主模块的 <code>foreign_library</code> 包，用 <code>#export_name</code> 导出 11 个非 raise 包装函数（错误折叠为 <code>{"ok":false}</code> / false / -1）。</p></li>
+        <li><span class="step-no">1</span><p><code>agentskills/playground</code> 是主模块的 <code>foreign_library</code> 包，用 <code>#export_name</code> 导出 12 个非 raise 包装函数（错误折叠为 <code>{"ok":false}</code> / false / -1）。</p></li>
         <li><span class="step-no">2</span><p><code>moon build --target js --release agentskills/playground</code> 生成一份 JS；同一份源码也可构建为 <code>wasm-gc</code> / <code>native</code>。</p></li>
         <li><span class="step-no">3</span><p>页面直接 <code>import</code> 并调用：解析、校验、注册、RBAC、压缩、截断、RRF、字符统计与 MCP 条目全部在本地完成。</p></li>
         <li><span class="step-no">4</span><p>语义由 61 项测试、24 点变异矩阵与 8 条证明义务守护；<code>check_pages.mjs</code> 验证导出与语义，Pages 部署 <code>docs/</code>。</p></li>

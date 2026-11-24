@@ -3,7 +3,7 @@
 <p align="left">
   <a href="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.2.0-blueviolet"></a>
+  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.2.1-blueviolet"></a>
   <img alt="MoonBit" src="https://img.shields.io/badge/MoonBit-%E6%9C%88%E5%85%94-purple">
   <img alt="Tests" src="https://img.shields.io/badge/tests-61%20native%20%C2%B7%2062%2F61%2F61-brightgreen">
   <img alt="Mutation" src="https://img.shields.io/badge/mutation-30%2F30%20KILLED-success">
@@ -60,7 +60,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | 注册表查询（`names` / `level_of` / `promote` / `unregister`） | ✅ |
 | 有界 RRF（`rrf_fuse_top`，全量前缀语义） | ✅ |
 | 预算诊断（`total_chars`，与截断同口径） | ✅ |
-| 浏览器演示（`playground` 11 导出 + `docs/` 库首页 + 123 项页检） | ✅ |
+| 浏览器演示（`playground` 12 导出 + `docs/` 库首页 + 142 项页检） | ✅ |
 | **WebAssembly 组件导出（Component Model · WIT 标准接口，CI 自证）** | ✅ |
 
 ## 快速开始
@@ -127,7 +127,7 @@ CI 的 `components` job 自动构建并上传 `.component.wasm` artifact——�
 - 变异 **30/30 KILLED**（7 功能域）；覆盖率 **核心 424/433 = 97.9%**（WSL 通道，2026-11-24；cli/playground/examples/proof 不计入）——[docs/TEST_REPORT.md](docs/TEST_REPORT.md)
 - **形式化验证：`verify/proof` `proof_enabled`——moon prove 8 goals proved**（Why3 + Z3：燃料账本 `gas_after`/占位计数 `dropped`/RBAC 授权 `allowed` 等契约核）
 - 本地 CI 与 `.github/workflows/ci.yml` 对齐：`bash scripts/local_ci.sh`（prove 走 WSL 通道；`--quick` 跳过变异/覆盖率慢项）
-- **浏览器演示**：`agentskills/playground` 11 个非 raise 导出 + `docs/` 库首页；`node scripts/check_pages.mjs` 123 项 PASS
+- **浏览器演示**：`agentskills/playground` 12 个非 raise 导出 + `docs/` 库首页；`node scripts/check_pages.mjs` 142 项 PASS；CDP E2E 29 项（含 939px 窄屏导航）
 
 ## 能力与边界
 

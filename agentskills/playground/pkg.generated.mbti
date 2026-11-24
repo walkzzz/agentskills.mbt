@@ -20,6 +20,8 @@ pub fn tool_mcp_entry(String, String) -> String
 
 pub fn total_chars(String) -> Int32
 
+pub fn total_chars_detail(String) -> String
+
 pub fn truncate_text(String, Int32) -> String
 
 // Errors

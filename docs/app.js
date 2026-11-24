@@ -7,7 +7,7 @@ import {
   compact_demo,
   truncate_text,
   rrf_demo,
-  total_chars,
+  total_chars_detail,
   tool_mcp_entry,
 } from "./playground.js";
 
@@ -73,10 +73,44 @@ if (themeToggle) {
   applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
 }
 
+/* ---------- 窄屏导航（≤960px 汉堡菜单） ---------- */
+
+const navToggle = $("#nav-toggle");
+const siteNav = $("#site-nav");
+
+function closeNav() {
+  if (!siteNav) return;
+  siteNav.classList.remove("open");
+  if (navToggle) {
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "打开导航");
+    navToggle.title = "打开导航";
+  }
+}
+
+if (navToggle && siteNav) {
+  navToggle.addEventListener("click", () => {
+    const open = siteNav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    navToggle.setAttribute("aria-label", open ? "关闭导航" : "打开导航");
+    navToggle.title = navToggle.getAttribute("aria-label");
+  });
+  siteNav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeNav);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeNav();
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 960) closeNav();
+  });
+}
+
 /* ---------- 演示动作 ---------- */
 
 function runParse() {
   auto("#parse-out", skill_parse($("#skill-md").value));
+  runHero();
 }
 
 function runValidate() {
@@ -121,28 +155,35 @@ function runCompact() {
 }
 
 function runTruncate() {
-  const text = truncate_text($("#trunc-text").value, Number($("#trunc-n").value) | 0);
+  const n = Number($("#trunc-n").value);
+  if (!Number.isSafeInteger(n) || n < 1 || n > 2147483647) {
+    showBad("#trunc-out", '{"ok":false,"error":"max_chars 必须是 1..2147483647 的整数"}');
+    return;
+  }
+  const text = truncate_text($("#trunc-text").value, n);
   showOk("#trunc-out", JSON.stringify({ result: text, codepoints: Array.from(text).length }));
 }
 
 function runRrf() {
-  auto(
-    "#rrf-out",
-    rrf_demo($("#rankings").value, Number($("#rrf-k").value) | 0, Number($("#rrf-top").value) | 0),
-  );
+  const k = Number($("#rrf-k").value);
+  const topN = Number($("#rrf-top").value);
+  if (!Number.isSafeInteger(k) || k < 1 || k > 2147483647) {
+    showBad("#rrf-out", '{"ok":false,"error":"k 必须是 1..2147483647 的整数（k=0 会导致分母为 0）"}');
+    return;
+  }
+  if (!Number.isSafeInteger(topN) || topN < 0 || topN > 2147483647) {
+    showBad("#rrf-out", '{"ok":false,"error":"top_n 必须是 0..2147483647 的整数"}');
+    return;
+  }
+  auto("#rrf-out", rrf_demo($("#rankings").value, k, topN));
 }
 
 function runTool() {
-  showOk("#tool-out", tool_mcp_entry($("#tool-name").value.trim(), $("#tool-desc").value.trim()));
+  auto("#tool-out", tool_mcp_entry($("#tool-name").value.trim(), $("#tool-desc").value.trim()));
 }
 
 function runChars() {
-  const n = total_chars($("#chars-json").value);
-  if (n < 0) {
-    showBad("#chars-out", '{"ok":false,"error":"invalid messages JSON"}');
-  } else {
-    showOk("#chars-out", JSON.stringify({ ok: true, chars: n }));
-  }
+  auto("#chars-out", total_chars_detail($("#chars-json").value));
 }
 
 function runHero() {
@@ -197,15 +238,30 @@ $$("button[data-run]").forEach((button) => {
   });
 });
 
+const DEFAULTS = {
+  parse: $("#skill-md").value,
+  validate: $("#v-name").value,
+};
+
 const PRESETS = {
   bad: {
     selector: "#skill-md",
     value: "no frontmatter at all\n\njust body text",
     action: "parse",
   },
+  "reset-parse": {
+    selector: "#skill-md",
+    value: DEFAULTS.parse,
+    action: "parse",
+  },
   invalid: {
     selector: "#v-name",
     value: "",
+    action: "validate",
+  },
+  "reset-validate": {
+    selector: "#v-name",
+    value: DEFAULTS.validate,
     action: "validate",
   },
 };

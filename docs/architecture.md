@@ -12,7 +12,7 @@
 | `agentskills`（主模块） | F01–F09 + F14 + F15：`skill` / `rag` / `auth` / `rbac` / `compactor` / `storage` / `storage_io` / `storage_pg` / `sandbox` / `sandbox_js` / `server` / `cli` / `tooling_bridge` / `playground` + 3 个 examples |
 | `verify` | fixture 资产 + 差分层：`verify`（known_failure 隔离、冻结期望）+ `proof`（moon prove 契约核） |
 
-`playground` 为浏览器演示导出层（`pkgtype(kind: "foreign_library")`，11 个 `#export_name` 非 raise 函数）。
+`playground` 为浏览器演示导出层（`pkgtype(kind: "foreign_library")`，12 个 `#export_name` 非 raise 函数）。
 
 ## 2. 三层执行模型
 
@@ -45,7 +45,7 @@
 | `sandbox` / `sandbox_js` | 燃料计量契约核 / js WebAssembly 执行器 | 无 / js 目标 |
 | `server` | HTTP 契约 + Router + SSE 编码 | 无（sans-I/O） |
 | `tooling_bridge` | SkillTool → GB/Z 185.7 ToolDescriptor / MCP 条目 | gbz185 `tooling` |
-| `playground` | 浏览器演示导出（11 个非 raise 函数） | 上述 Kernel 包 |
+| `playground` | 浏览器演示导出（12 个非 raise 函数） | 上述 Kernel 包 |
 
 依赖单向：`playground → skill/rag/rbac/compactor/tooling_bridge`；`tooling_bridge → gbz185/tooling`；Kernel 包之间无环。
 

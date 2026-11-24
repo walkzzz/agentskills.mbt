@@ -898,6 +898,8 @@ const _M0FP37walkzzz17agentskills_2embt10playground10split__csvN6recordS3631 = n
 const _M0FP37walkzzz17agentskills_2embt10playground15skill__validateN6recordS3667 = new _M0TPC16string10StringView(" ", 0, 1);
 const _M0FP37walkzzz17agentskills_2embt10playground14registry__demoN6constrS3680 = "MIT";
 const _M0FPC28internal7strconv17parse__scientificN8exp__numS1753 = 0n;
+const _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entryN6recordS3860 = new _M0TPC16string10StringView(" ", 0, 1);
+const _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entryN6recordS3861 = new _M0TPC16string10StringView(" ", 0, 1);
 function _M0MPC16string10StringView12unsafe__view(self, start, end) {
   return new _M0TPC16string10StringView(self.str, self.start + start | 0, self.start + end | 0);
 }
@@ -13802,9 +13804,12 @@ function _M0FP37walkzzz17agentskills_2embt10playground13compact__demo(messages_j
   const compacted = _M0FP37walkzzz17agentskills_2embt9compactor15compact_2einner(messages, keep_recent);
   const fitted = _M0FP37walkzzz17agentskills_2embt9compactor19fit__budget_2einner(compacted, max_chars);
   const after_chars = _M0FP37walkzzz17agentskills_2embt9compactor12total__chars(new _M0TPB9ArrayViewGRP37walkzzz17agentskills_2embt9compactor7MessageE(fitted.buf, 0, fitted.len));
+  const folded = after_chars < before_chars;
+  const output = folded ? fitted : messages;
+  const final_chars = folded ? after_chars : before_chars;
   const items = new _M0TPB5ArrayGRPC14json4JsonE([], 0);
-  const _bind = fitted.len;
-  const _bind$2 = fitted.buf;
+  const _bind = output.len;
+  const _bind$2 = output.buf;
   let _tmp = 0;
   while (true) {
     const _ = _tmp;
@@ -13823,17 +13828,29 @@ function _M0FP37walkzzz17agentskills_2embt10playground13compact__demo(messages_j
   const _p = before_chars + 0;
   const _p$2 = undefined;
   const _tmp$3 = { _0: "input_chars", _1: new _M0DTPC14json4Json6Number(_p, _p$2) };
-  const _p$3 = after_chars + 0;
+  const _p$3 = final_chars + 0;
   const _p$4 = undefined;
-  const _bind$3 = [_tmp$2, _tmp$3, { _0: "output_chars", _1: new _M0DTPC14json4Json6Number(_p$3, _p$4) }, { _0: "messages", _1: new _M0DTPC14json4Json5Array(items) }];
-  const _p$5 = _M0MPB3Map3MapGsRPC14json4JsonE(new _M0TPB9ArrayViewGUsRPC14json4JsonEE(_bind$3, 0, 4), undefined);
-  const j = new _M0DTPC14json4Json6Object(_p$5);
+  const _tmp$4 = { _0: "output_chars", _1: new _M0DTPC14json4Json6Number(_p$3, _p$4) };
+  const _p$5 = (before_chars - final_chars | 0) + 0;
+  const _p$6 = undefined;
+  const _bind$3 = [_tmp$2, _tmp$3, _tmp$4, { _0: "saved_chars", _1: new _M0DTPC14json4Json6Number(_p$5, _p$6) }, { _0: "folded", _1: _M0MPC14json4Json4JsonGbE(folded) }, { _0: "note", _1: _M0MPC14json4Json4JsonGsE(folded ? "" : "折叠无收益，已跳过（保留原消息）") }, { _0: "messages", _1: new _M0DTPC14json4Json5Array(items) }];
+  const _p$7 = _M0MPB3Map3MapGsRPC14json4JsonE(new _M0TPB9ArrayViewGUsRPC14json4JsonEE(_bind$3, 0, 7), undefined);
+  const j = new _M0DTPC14json4Json6Object(_p$7);
   return _M0MPC14json4Json17stringify_2einner(j, false, 0, undefined);
 }
 function _M0FP37walkzzz17agentskills_2embt10playground14truncate__text(text, max_chars) {
+  if (max_chars <= 0) {
+    return "";
+  }
   return _M0FP37walkzzz17agentskills_2embt9compactor15truncate__chars(text, max_chars);
 }
 function _M0FP37walkzzz17agentskills_2embt10playground9rrf__demo(rankings_json, k, top_n) {
+  if (k <= 0) {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("k must be > 0");
+  }
+  if (top_n < 0) {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("top_n must be >= 0");
+  }
   let parsed;
   let _try_err;
   _L: {
@@ -13908,12 +13925,16 @@ function _M0FP37walkzzz17agentskills_2embt10playground9rrf__demo(rankings_json, 
     const _ = _tmp;
     if (_ < _bind) {
       const hit = _bind$2[_];
-      const _tmp$2 = { _0: "doc_id", _1: _M0MPC14json4Json4JsonGsE(hit.doc_id) };
       const _p = hit.score;
-      const _p$2 = undefined;
-      const _bind$3 = [_tmp$2, { _0: "score", _1: new _M0DTPC14json4Json6Number(_p, _p$2) }];
-      const _p$3 = _M0MPB3Map3MapGsRPC14json4JsonE(new _M0TPB9ArrayViewGUsRPC14json4JsonEE(_bind$3, 0, 2), undefined);
-      _M0MPC15array5Array4pushGURP212moonbitstack8moonyaml2AtRPC14json4JsonEE(items, new _M0DTPC14json4Json6Object(_p$3));
+      if (!(_p >= _M0FPB18double__min__value && _p <= _M0FPB18double__max__value)) {
+        return _M0FP37walkzzz17agentskills_2embt10playground11error__json("non-finite RRF score");
+      }
+      const _tmp$2 = { _0: "doc_id", _1: _M0MPC14json4Json4JsonGsE(hit.doc_id) };
+      const _p$2 = hit.score;
+      const _p$3 = undefined;
+      const _bind$3 = [_tmp$2, { _0: "score", _1: new _M0DTPC14json4Json6Number(_p$2, _p$3) }];
+      const _p$4 = _M0MPB3Map3MapGsRPC14json4JsonE(new _M0TPB9ArrayViewGUsRPC14json4JsonEE(_bind$3, 0, 2), undefined);
+      _M0MPC15array5Array4pushGURP212moonbitstack8moonyaml2AtRPC14json4JsonEE(items, new _M0DTPC14json4Json6Object(_p$4));
       _tmp = _ + 1 | 0;
       continue;
     } else {
@@ -13977,6 +13998,61 @@ function _M0FP37walkzzz17agentskills_2embt10playground12total__chars(messages_js
     return -1;
   }
 }
+function _M0FP37walkzzz17agentskills_2embt10playground20total__chars__detail(messages_json) {
+  let parsed;
+  let _try_err;
+  _L: {
+    _L$2: {
+      const _bind = _M0FPC14json13parse_2einner(new _M0TPC16string10StringView(messages_json, 0, messages_json.length), 1024, false, false);
+      if (_bind.$tag === 1) {
+        const _ok = _bind;
+        parsed = _ok._0;
+      } else {
+        const _err = _bind;
+        _try_err = _err._0;
+        break _L$2;
+      }
+      break _L;
+    }
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("invalid messages JSON");
+  }
+  if (parsed.$tag === 5) {
+    const _Array = parsed;
+    const _items = _Array._0;
+    const messages = new _M0TPB5ArrayGRP37walkzzz17agentskills_2embt9compactor7MessageE([], 0);
+    const _bind = _items.len;
+    const _bind$2 = _items.buf;
+    let _tmp = 0;
+    while (true) {
+      const _ = _tmp;
+      if (_ < _bind) {
+        const item = _bind$2[_];
+        const _bind$3 = _M0FP37walkzzz17agentskills_2embt10playground11item__field(item, "content");
+        let content;
+        if (_bind$3 === undefined) {
+          return _M0FP37walkzzz17agentskills_2embt10playground11error__json("message content must be a string");
+        } else {
+          const _Some = _bind$3;
+          content = _Some;
+        }
+        _M0MPC15array5Array4pushGURP212moonbitstack8moonyaml2AtRPC14json4JsonEE(messages, new _M0TP37walkzzz17agentskills_2embt9compactor7Message("any", content));
+        _tmp = _ + 1 | 0;
+        continue;
+      } else {
+        break;
+      }
+    }
+    const _tmp$2 = { _0: "ok", _1: _M0MPC14json4Json4JsonGbE(true) };
+    const _p = _M0FP37walkzzz17agentskills_2embt9compactor12total__chars(new _M0TPB9ArrayViewGRP37walkzzz17agentskills_2embt9compactor7MessageE(messages.buf, 0, messages.len)) + 0;
+    const _p$2 = undefined;
+    const _bind$3 = [_tmp$2, { _0: "chars", _1: new _M0DTPC14json4Json6Number(_p, _p$2) }];
+    const _p$3 = _M0MPB3Map3MapGsRPC14json4JsonE(new _M0TPB9ArrayViewGUsRPC14json4JsonEE(_bind$3, 0, 2), undefined);
+    const j = new _M0DTPC14json4Json6Object(_p$3);
+    return _M0MPC14json4Json17stringify_2einner(j, false, 0, undefined);
+  } else {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("messages must be a JSON array");
+  }
+}
 function _M0IP37walkzzz17agentskills_2embt10playground8DemoToolP37walkzzz17agentskills_2embt15tooling__bridge9SkillTool19tool__input__schema(_self) {
   const _p = "object";
   const _bind = [{ _0: "type", _1: new _M0DTPC14json4Json6String(_p) }];
@@ -13984,7 +14060,18 @@ function _M0IP37walkzzz17agentskills_2embt10playground8DemoToolP37walkzzz17agent
   return new _M0DTPC14json4Json6Object(_p$2);
 }
 function _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entry(name, description) {
+  const trimmed_name = _M0MPC16string10StringView9to__owned(_M0MPC16string6String12trim_2einner(name, _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entryN6recordS3860));
+  if (trimmed_name.length === 0) {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("tool name required");
+  }
+  if (trimmed_name.length > 64) {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("tool name exceeds 64 chars");
+  }
+  const _bind = _M0MPC16string6String12trim_2einner(description, _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entryN6recordS3861);
+  if ((_bind.end - _bind.start | 0) === 0) {
+    return _M0FP37walkzzz17agentskills_2embt10playground11error__json("tool description required");
+  }
   const tool = new _M0TP37walkzzz17agentskills_2embt10playground8DemoTool(name, description);
   return _M0MPC14json4Json17stringify_2einner(_M0FP37walkzzz17agentskills_2embt15tooling__bridge14to__mcp__entryGRP37walkzzz17agentskills_2embt10playground8DemoToolE(tool), false, 0, undefined);
 }
-export { _M0FP37walkzzz17agentskills_2embt10playground12skill__parse as skill_parse, _M0FP37walkzzz17agentskills_2embt10playground15skill__validate as skill_validate, _M0FP37walkzzz17agentskills_2embt10playground14registry__demo as registry_demo, _M0FP37walkzzz17agentskills_2embt10playground12rbac__matrix as rbac_matrix, _M0FP37walkzzz17agentskills_2embt10playground11rbac__check as rbac_check, _M0FP37walkzzz17agentskills_2embt10playground13compact__demo as compact_demo, _M0FP37walkzzz17agentskills_2embt10playground14truncate__text as truncate_text, _M0FP37walkzzz17agentskills_2embt10playground9rrf__demo as rrf_demo, _M0FP37walkzzz17agentskills_2embt10playground12total__chars as total_chars, _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entry as tool_mcp_entry }
+export { _M0FP37walkzzz17agentskills_2embt10playground12skill__parse as skill_parse, _M0FP37walkzzz17agentskills_2embt10playground15skill__validate as skill_validate, _M0FP37walkzzz17agentskills_2embt10playground14registry__demo as registry_demo, _M0FP37walkzzz17agentskills_2embt10playground12rbac__matrix as rbac_matrix, _M0FP37walkzzz17agentskills_2embt10playground11rbac__check as rbac_check, _M0FP37walkzzz17agentskills_2embt10playground13compact__demo as compact_demo, _M0FP37walkzzz17agentskills_2embt10playground14truncate__text as truncate_text, _M0FP37walkzzz17agentskills_2embt10playground9rrf__demo as rrf_demo, _M0FP37walkzzz17agentskills_2embt10playground12total__chars as total_chars, _M0FP37walkzzz17agentskills_2embt10playground20total__chars__detail as total_chars_detail, _M0FP37walkzzz17agentskills_2embt10playground16tool__mcp__entry as tool_mcp_entry }

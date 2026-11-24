@@ -51,7 +51,7 @@ node scripts/check_pages.mjs                              # 页面门禁
 - 变异：30 点全部 KILLED（7 功能域；详见 TEST_REPORT）。
 - 形式化：`verify/proof` 8 goals proved（燃料账本 / 占位计数 / RBAC 授权）。
 - 差分：42 个上游 SKILL.md 冻结期望；1 例登记 knowe_failure（BUG-001，UP-019 frontmatter 被 moonyaml 拒绝）。
-- 页面门禁：`node scripts/check_pages.mjs` 123 项 PASS。
+- 页面门禁：`node scripts/check_pages.mjs` **142 项 PASS**；CDP E2E **29 项 PASS**（含 939px 窄屏导航）。
 
 ## 5. 资源占用
 

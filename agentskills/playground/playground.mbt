@@ -234,14 +234,27 @@ pub fn compact_demo(
   let compacted = @compactor.compact(messages, keep_recent~)
   let fitted = @compactor.fit_budget(compacted, max_chars~)
   let after_chars = @compactor.total_chars(fitted[:])
+  // 折叠收益判断：占位比被折叠内容更长时不应"越压越大"，直接保留原消息
+  let folded = after_chars < before_chars
+  let output = if folded { fitted } else { messages }
+  let final_chars = if folded { after_chars } else { before_chars }
   let items : Array[Json] = []
-  for m in fitted {
+  for m in output {
     items.push({ "role": Json(m.role), "content": Json(m.content) })
   }
   let j : Json = {
     "ok": Json(true),
     "input_chars": Json::number(before_chars.to_double()),
-    "output_chars": Json::number(after_chars.to_double()),
+    "output_chars": Json::number(final_chars.to_double()),
+    "saved_chars": Json::number((before_chars - final_chars).to_double()),
+    "folded": Json(folded),
+    "note": Json(
+      if folded {
+        ""
+      } else {
+        "折叠无收益，已跳过（保留原消息）"
+      },
+    ),
     "messages": Json::array(items),
   }
   j.stringify()
@@ -260,9 +273,13 @@ fn item_field(item : Json, key : String) -> String? {
 }
 
 ///|
-/// Unicode 安全截断（F05）：按 codepoint 截断并追加省略号
+/// Unicode 安全截断（F05）：按 codepoint 截断并追加省略号。
+/// max_chars <= 0 返回空串（不再返回超出上限的 "…"）。
 #export_name("truncate_text")
 pub fn truncate_text(text : String, max_chars : Int32) -> String {
+  if max_chars <= 0 {
+    return ""
+  }
   @compactor.truncate_chars(text, max_chars)
 }
 
@@ -270,6 +287,12 @@ pub fn truncate_text(text : String, max_chars : Int32) -> String {
 /// RRF 融合演示（F04）：rankings_json = [["doc-a","doc-b"], ...]
 #export_name("rrf_demo")
 pub fn rrf_demo(rankings_json : String, k : Int32, top_n : Int32) -> String {
+  if k <= 0 {
+    return error_json("k must be > 0")
+  }
+  if top_n < 0 {
+    return error_json("top_n must be >= 0")
+  }
   let parsed = @json.parse(rankings_json) catch {
     _ => return error_json("invalid rankings JSON")
   }
@@ -296,6 +319,9 @@ pub fn rrf_demo(rankings_json : String, k : Int32, top_n : Int32) -> String {
   let hits = @rag.rrf_fuse_top(rankings, k~, top_n~)
   let items : Array[Json] = []
   for hit in hits {
+    if !hit.score.is_finite() {
+      return error_json("non-finite RRF score")
+    }
     items.push({ "doc_id": Json(hit.doc_id), "score": Json::number(hit.score) })
   }
   let j : Json = {
@@ -328,6 +354,34 @@ pub fn total_chars(messages_json : String) -> Int32 {
 }
 
 ///|
+/// 字符统计（含错误分类）：成功 `{"ok":true,"chars":N}`；
+/// JSON 语法错误 / 非数组 / content 非字符串分别返回具体原因。
+#export_name("total_chars_detail")
+pub fn total_chars_detail(messages_json : String) -> String {
+  let parsed = @json.parse(messages_json) catch {
+    _ => return error_json("invalid messages JSON")
+  }
+  match parsed {
+    Array(items) => {
+      let messages : Array[@compactor.Message] = []
+      for item in items {
+        let content = match item_field(item, "content") {
+          Some(text) => text
+          None => return error_json("message content must be a string")
+        }
+        messages.push({ role: "any", content, })
+      }
+      let j : Json = {
+        "ok": Json(true),
+        "chars": Json::number(@compactor.total_chars(messages[:]).to_double()),
+      }
+      j.stringify()
+    }
+    _ => error_json("messages must be a JSON array")
+  }
+}
+
+///|
 /// 演示工具（F03 单源映射的最小 SkillTool 实现）
 priv struct DemoTool {
   name : String
@@ -355,9 +409,20 @@ impl @tooling_bridge.SkillTool for DemoTool with fn execute(_self, args) -> Json
 }
 
 ///|
-/// 技能工具 → MCP tools/list 条目（F03 单源映射）
+/// 技能工具 → MCP tools/list 条目（F03 单源映射）。
+/// 非空与长度校验：name 必填且 ≤64，description 必填（与 gbz185 tool_descriptor_check 同口径）。
 #export_name("tool_mcp_entry")
 pub fn tool_mcp_entry(name : String, description : String) -> String {
+  let trimmed_name = name.trim(chars=" ").to_owned()
+  if trimmed_name.length() == 0 {
+    return error_json("tool name required")
+  }
+  if trimmed_name.length() > 64 {
+    return error_json("tool name exceeds 64 chars")
+  }
+  if description.trim(chars=" ").length() == 0 {
+    return error_json("tool description required")
+  }
   let tool : DemoTool = { name, description, }
   @tooling_bridge.to_mcp_entry(tool).stringify()
 }

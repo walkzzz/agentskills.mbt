@@ -10,7 +10,7 @@
 | 差分层（对上游） | **42 上游真实 fixtures** | 全绿（含 BUG-001 known_failure 隔离） |
 | 属性测试 | 6 quickcheck（seed 2026–2032 固定；skill×4 + rag×2） | 全绿可复现 |
 | **变异测试** | **30 变异点 / 7 功能域** | **30/30 KILLED（击杀率 100%）** |
-| 页面门禁 | `node scripts/check_pages.mjs` | **123 项 PASS**（结构 / 钩子 / 11 导出 / 语义 / 版本） |
+| 页面门禁 | `node scripts/check_pages.mjs` | **142 项 PASS**（结构 / 移动端导航 / 钩子 / 12 导出 / 语义 / 版本） |
 | 浏览器 E2E | CDP（Chrome/Edge headless） | **17 项 PASS**（本地；截图存临时目录） |
 | 覆盖率 | `moon coverage analyze` + `report -f full_summary`（WSL 通道，2026-11-24） | **核心 424/433 = 97.9%**（未覆盖 9 行：jsonl 2 / frontmatter 4 / compactor 3）；cli / playground / examples / proof 不计入 |
 
@@ -69,10 +69,25 @@
 
 ## 页面与演示（0.2.0 新增）
 
-- `agentskills/playground`：11 个非 raise 导出（解析/校验/注册/RBAC/压缩/截断/RRF/字符统计/MCP 条目），错误折叠为 `{"ok":false}` / false / -1。
+- `agentskills/playground`：12 个非 raise 导出（解析/校验/注册/RBAC/压缩/截断/RRF/字符统计与分类/MCP 条目），错误折叠为 `{"ok":false}` / false / -1。
 - `docs/index.html`：库首页范式（Hero 实时解析、12 能力卡、9 演示卡、深浅主题、Open Graph、响应式）。
-- `check_pages.mjs` 123 项：结构锚点、钩子存在、11 导出可调用、语义断言（解析字段、shortlex 名称、RBAC 矩阵、压缩占位、截断 codepoint、RRF 前缀、MCP 条目）、版本与口径一致性。
-- CDP E2E 17 项：真实浏览器点击 10 个演示按钮并校验输出、Hero 初始化、主题切换。
+- `check_pages.mjs` 142 项：结构锚点、移动端导航、钩子存在、12 导出可调用、语义断言（解析字段、shortlex 名称、RBAC 矩阵、压缩收益判断、截断边界、RRF k 校验、MCP 条目校验、字符统计错误分类）、版本与口径一致性。
+- CDP E2E **29 项**：真实浏览器点击 10 个演示按钮并校验输出、Hero 初始化、主题切换、939px 窄屏导航（默认隐藏 / 汉堡可见 / 抽屉展开 / 点链接关闭 / 宽屏恢复）、边界输入（`k=-1`、`max_chars=0`、空工具名、字符统计错误分类）与预置复位。
+
+### 0.2.1 页面测试报告整改（F1–F6）
+
+| 编号 | 问题 | 修复 |
+| --- | --- | --- |
+| F1 | ≤960px 顶部导航整块消失 | `#nav-toggle` 汉堡按钮 + `.nav.open` 抽屉（`aria-expanded` / Escape / 点链接 / resize 关闭） |
+| F2 | RRF 负 k 输出 `"score":"Infinity"`（字符串）且 k 经 `\|0` | `rrf_demo` 拒绝 `k ≤ 0`、`top_n < 0`，并对非有限分数返回错误；页面用 `Number.isSafeInteger` 校验 k/top_n（移除 `\|0`） |
+| F3 | 工具 MCP 条目无校验（空 name/description 成功） | `tool_mcp_entry` 校验 name 非空且 ≤64、description 非空；页面 `runTool` 改用错误态渲染 |
+| F4 | 压缩在折叠收益为负时反向膨胀（64→80） | `compact_demo` 比较前后字符数：无收益时保留原消息，并输出 `folded` / `saved_chars` / `note` |
+| F5 | 截断 `max_chars≤0` 返回 `"…"`（超出上限） | 库层 `truncate_text` 对 `max_chars≤0` 返回空串；页面拒绝非正整数（1..2147483647） |
+| F6 | 字符统计把结构/类型错误都报成 `invalid messages JSON` | 新增 `total_chars_detail`：区分 JSON 语法 / 非数组 / content 类型三类错误；页面改用它 |
+| 补充 | 预置示例无法复位、Hero 与 demo 不一致 | 新增「恢复默认」按钮（`reset-parse` / `reset-validate`）；`runParse` 成功后同步刷新 Hero |
+
+- 页检 123 → **142**（新增移动端导航、参数校验提示、压缩收益、RRF k、工具校验、字符分类等断言）；E2E 17 → **29**。
+- 四目标：native 61 / js 62 / wasm 61 / wasm-gc 61；`moon fmt --check` 通过。
 
 ## 运行级验证
 

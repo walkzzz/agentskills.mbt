@@ -28,6 +28,7 @@
 | --- | --- | --- | --- |
 | GAP-10 | 演示层（`playground` / `cli` / `examples`）不计入覆盖率与核心质量口径 | 覆盖率数字解读 | 文档与 TEST_REPORT 明示；核心 Kernel 包单独计 |
 | GAP-11 | `docs/index.md` 已删除（Jekyll 页面并入静态 `index.html`）；`_config.yml` 保留但不依赖主题 | Pages 渲染方式 | 静态页为事实源；本地预览 `node scripts/serve_pages.mjs` |
+| GAP-12 | 演示层参数校验：RRF `k > 0`、截断 `max_chars ≥ 1`、工具 name/description 非空；压缩在无收益时跳过折叠 | 浏览器演示数值与口径 | 0.2.1 修复（F1–F6）；库核心 API 不变 |
 
 ## 测试口径（2026-11-24 实测）
 
@@ -35,5 +36,5 @@
 - 变异：**30/30 KILLED**（7 功能域，`scripts/mutation_test.mbtx`）。
 - 覆盖率：`moon coverage analyze` + `report -f full_summary`（WSL 通道，2026-11-24）——**核心 424/433 = 97.9%**，未覆盖 9 行（jsonl 2 / frontmatter 4 / compactor 3）；`cli`/`playground`/`examples`/`proof` 不计入（GAP-10）。
 - 形式化：`verify/proof` **8 goals proved**（moon prove / WSL Z3 4.8.12）。
-- 页面：`node scripts/check_pages.mjs` **123 项 PASS**；CDP E2E **17 项 PASS**（本地）。
+- 页面：`node scripts/check_pages.mjs` **142 项 PASS**；CDP E2E **29 项 PASS**（含 939px 窄屏导航、边界输入与预置复位）。
 - 数字一致性门禁：`scripts/repo_stats.sh`；本地 CI `scripts/local_ci.sh` 与 `.github/workflows/ci.yml` 对齐。

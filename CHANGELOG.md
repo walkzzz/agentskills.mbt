@@ -3,6 +3,26 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/) 与 [语义化版本](https://semver.org/)。
 数字口径：测试与功能状态以仓库实测为准（native，日期标注）。
 
+## [0.2.1] - 2026-11-24
+
+### Fixed — 页面测试报告 F1–F6
+
+- **F1 窄屏导航**：≤960px 新增汉堡按钮（`#nav-toggle`）+ 抽屉导航（`.nav.open`），含 `aria-expanded`、Escape/点链接/resize 关闭。
+- **F2 RRF 参数与分数**：`rrf_demo` 拒绝 `k ≤ 0` / `top_n < 0`，并对非有限分数返回错误；页面用 `Number.isSafeInteger` 校验，移除 `|0` 截断。
+- **F3 工具条目校验**：`tool_mcp_entry` 校验 name 非空且 ≤64、description 非空（与 gbz185 工具描述校验同口径）。
+- **F4 压缩收益判断**：`compact_demo` 在折叠无收益时保留原消息，输出 `folded` / `saved_chars` / `note`，避免「越压越大」。
+- **F5 截断参数**：`truncate_text` 对 `max_chars ≤ 0` 返回空串；页面拒绝非正整数。
+- **F6 字符统计错误分类**：新增 `total_chars_detail`（JSON 语法 / 非数组 / content 类型分别报错），页面改用。
+
+### Added
+
+- `total_chars_detail` 导出（12 个演示导出）；「恢复默认」预置按钮（`reset-parse` / `reset-validate`）；`runParse` 同步刷新 Hero。
+
+### Quality
+
+- 页面门禁 123 → **142**；CDP E2E 17 → **29**（939px 窄屏导航 + 边界输入 + 复位）。
+- 测试 / 变异 / 覆盖率口径不变（native 61、js 62、wasm 61、wasm-gc 61；30/30；424/433）。
+
 ## [0.2.0] - 2026-11-24
 
 ### Added — API（12 项，纯增量）

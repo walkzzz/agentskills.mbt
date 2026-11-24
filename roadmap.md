@@ -26,6 +26,18 @@
 | 变异 | **30/30 KILLED**（7 功能域） |
 | 证明 | 8 goals proved（未改动证明函数） |
 | 演示 | `agentskills/playground` 11 导出 + `docs/` 库首页；`check_pages` 123 项 PASS；CDP E2E 17 项 PASS |
+
+### 0.2.1 页面测试报告整改（2026-11-24）
+
+| 项 | 结果 |
+| --- | --- |
+| F1 | ≤960px 汉堡菜单 + 抽屉导航（`#nav-toggle` / `.nav.open`） |
+| F2 | RRF 拒绝 `k ≤ 0` / `top_n < 0`、分数有限性保护、移除 `\|0` |
+| F3 | 工具 MCP 条目 name/description 非空与长度校验 |
+| F4 | 压缩无收益时跳过折叠（`folded` / `saved_chars` / `note`） |
+| F5 | 截断 `max_chars ≤ 0` → 空串；页面正整数校验 |
+| F6 | `total_chars_detail` 三类错误分类；预置复位 + Hero 同步 |
+| 门禁 | 页检 **142**；E2E **29**（本地 / 线上） |
 | 文档 | 七篇立项文档 + 工程文档 23 份同步 |
 
 ### 已完成
@@ -153,6 +165,7 @@
 | agentskills.mbt 0.1.0 | **2026-11-19（已发布 mooncakes）** | 27/27 测试 + deny-warn + 变异 14/14 + repo_stats 绿（提前于 M2 排期，发布 Server status 200） |
 | agentskills.mbt 0.1.1 | **2026-11-19（发布预备就绪，待 walkzzz 执行 moon publish）** | 45/45（native）/ 46/46（js）+ deny-warn 四目标 + 变异 24/24 + 覆盖率基线 + prove 8 goals + CI 11/11 全绿 + repo_stats 绿（增量：F08 PostgreSQL / F09 js 执行器 / Component Model / 惯用化重构） |
 | agentskills.mbt 0.2.0 | **2026-11-24（发布预备就绪，待 walkzzz 执行 moon publish）** | 61/61（native）/ 62/62（js）/ 61/61（wasm·wasm-gc）+ deny-warn 四目标 + 变异 **30/30** + prove 8 goals + check_pages **123** + CDP E2E 17（增量：12 API / 11 演示导出 / 库首页 / 七篇立项文档） |
+| agentskills.mbt 0.2.1 | **2026-11-24（发布预备就绪，待 walkzzz 执行 moon publish）** | 61/61（native）/ 62/62（js）/ 61/61（wasm·wasm-gc）+ deny-warn 四目标 + 变异 30/30 + prove 8 goals + check_pages **142** + CDP E2E **29**（增量：F1–F6 整改 / 12 演示导出） |
 | agentskills.mbt 1.0.0 | 2027-02-19 | 门禁终跑 + 对照矩阵 100%（M3） |
 
 （原 bcrypt/bm25/pg/wasm3 四条库发布行随自研计划撤销删除，2026-11-18。）
