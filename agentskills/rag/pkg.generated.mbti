@@ -8,6 +8,8 @@ import {
 // Values
 pub fn rrf_fuse(Array[Array[String]], k? : Int32) -> Array[RankedHit]
 
+pub fn rrf_fuse_top(Array[Array[String]], k? : Int32, top_n? : Int32) -> Array[RankedHit]
+
 // Errors
 
 // Types and methods
@@ -16,6 +18,7 @@ pub struct RagIndex {
 }
 pub fn RagIndex::add(Self, String, String) -> Unit
 pub fn RagIndex::count(Self) -> Int32
+pub fn RagIndex::is_empty(Self) -> Bool
 pub fn RagIndex::new() -> Self
 pub fn RagIndex::search(Self, String, top_k? : Int32) -> Array[@MoonRetrieve.SearchResult]
 

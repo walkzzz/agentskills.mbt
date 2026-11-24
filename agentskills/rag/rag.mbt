@@ -25,6 +25,14 @@ pub fn RagIndex::count(self : Self) -> Int32 {
 }
 
 ///|
+///is_empty — 是否尚未索引任何文档。
+///
+///En: is_empty reports whether no document has been indexed.
+pub fn RagIndex::is_empty(self : Self) -> Bool {
+  self.count() == 0
+}
+
+///|
 ///search — BM25 检索（命中按相关度降序）。
 pub fn RagIndex::search(
   self : Self,
@@ -89,4 +97,27 @@ pub fn rrf_fuse(
   }
   hits.sort()
   hits
+}
+
+///|
+///rrf_fuse_top — 有界返回的 RRF 融合（结果与 rrf_fuse 前缀严格一致）。
+///
+///En: rrf_fuse_top is a bounded variant of rrf_fuse — the result is exactly the
+///prefix of the full fusion. It does not change the ranking semantics; use it to
+///avoid materialising callers' downstream copies of the full list.
+pub fn rrf_fuse_top(
+  rankings : Array[Array[String]],
+  k~ : Int32 = 60,
+  top_n~ : Int32 = 10,
+) -> Array[RankedHit] {
+  let all = rrf_fuse(rankings, k~)
+  if top_n <= 0 {
+    return []
+  }
+  let limit = if all.length() < top_n { all.length() } else { top_n }
+  let out : Array[RankedHit] = []
+  for i in 0..<limit {
+    out.push(all[i])
+  }
+  out
 }

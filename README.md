@@ -3,10 +3,10 @@
 <p align="left">
   <a href="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/walkzzz/agentskills.mbt/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.1.1-blueviolet"></a>
+  <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt"><img alt="mooncakes" src="https://img.shields.io/badge/mooncakes-0.2.0-blueviolet"></a>
   <img alt="MoonBit" src="https://img.shields.io/badge/MoonBit-%E6%9C%88%E5%85%94-purple">
-  <img alt="Tests" src="https://img.shields.io/badge/tests-45%2F45%20passing-brightgreen">
-  <img alt="Mutation" src="https://img.shields.io/badge/mutation-24%2F24%20KILLED-success">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-61%20native%20%C2%B7%2062%2F61%2F61-brightgreen">
+  <img alt="Mutation" src="https://img.shields.io/badge/mutation-30%2F30%20KILLED-success">
   <img alt="Prove" src="https://img.shields.io/badge/moon%20prove-8%20goals%20proved-blue">
   <img alt="Standard" src="https://img.shields.io/badge/SKILL.md-standard-teal">
   <img alt="GBZ" src="https://img.shields.io/badge/GB%2FZ%20185--2026-%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%92%E8%81%94-red">
@@ -56,7 +56,11 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 | 服务端 API（HTTP 契约 + Router + SSE 编码） | ✅ |
 | 双智能体互联演示（GB/Z 185.3/185.5/185.6 全流程） | ✅ |
 | 形式化验证（moon prove 8 goals proved） | ✅ |
-| 变异测试（24/24 KILLED，7 功能域） | ✅ |
+| 变异测试（30/30 KILLED，7 功能域） | ✅ |
+| 注册表查询（`names` / `level_of` / `promote` / `unregister`） | ✅ |
+| 有界 RRF（`rrf_fuse_top`，全量前缀语义） | ✅ |
+| 预算诊断（`total_chars`，与截断同口径） | ✅ |
+| 浏览器演示（`playground` 11 导出 + `docs/` 库首页 + 123 项页检） | ✅ |
 | **WebAssembly 组件导出（Component Model · WIT 标准接口，CI 自证）** | ✅ |
 
 ## 快速开始
@@ -65,7 +69,7 @@ MoonBit 全量移植的 **SKILL.md 标准技能运行时**（上游：[UCToo/age
 git clone https://github.com/walkzzz/agentskills.mbt.git
 cd agentskills.mbt
 moon check --deny-warn        # 四目标零警告门禁
-moon test                     # 45/45（2026-11-19 实测）
+moon test                     # 61/61（native，2026-11-24；js 62/62 · wasm/wasm-gc 61/61）
 moon run cli                  # F01 解析 → F02 注册 端到端演示
 moon run examples/interconnect_demo   # 双智能体互联演示（sans-I/O 零网络依赖）
 ```
@@ -119,10 +123,11 @@ CI 的 `components` job 自动构建并上传 `.component.wasm` artifact——�
 
 ## 质量与验证
 
-- 测试 **45/45**（四目标；CI 全绿——check/contract/**prove**/native×3/portable×3/**coverage**）
-- 变异 **24/24 KILLED**（7 功能域）；覆盖率库代码仅 3 行未覆盖（[docs/TEST_REPORT.md](docs/TEST_REPORT.md)）
+- 测试 **61/61**（native；js 62/62 · wasm / wasm-gc 61/61；CI 全绿——check/contract/**prove**/native×3/portable×3/**coverage**）
+- 变异 **30/30 KILLED**（7 功能域）；覆盖率 **核心 424/433 = 97.9%**（WSL 通道，2026-11-24；cli/playground/examples/proof 不计入）——[docs/TEST_REPORT.md](docs/TEST_REPORT.md)
 - **形式化验证：`verify/proof` `proof_enabled`——moon prove 8 goals proved**（Why3 + Z3：燃料账本 `gas_after`/占位计数 `dropped`/RBAC 授权 `allowed` 等契约核）
 - 本地 CI 与 `.github/workflows/ci.yml` 对齐：`bash scripts/local_ci.sh`（prove 走 WSL 通道；`--quick` 跳过变异/覆盖率慢项）
+- **浏览器演示**：`agentskills/playground` 11 个非 raise 导出 + `docs/` 库首页；`node scripts/check_pages.mjs` 123 项 PASS
 
 ## 能力与边界
 
@@ -135,6 +140,13 @@ CI 的 `components` job 自动构建并上传 `.component.wasm` artifact——�
 
 | 文档 | 内容 |
 | --- | --- |
+| [docs/architecture.md](docs/architecture.md) | 架构设计：三层执行模型 · 包边界 · 排序语义 |
+| [docs/performance.md](docs/performance.md) | 性能报告：复杂度 · 演示规模 · 质量口径 |
+| [docs/comparison.md](docs/comparison.md) | 方案对比：手写运行时 / 上游实现 / 通用框架 |
+| [docs/assessment.md](docs/assessment.md) | 立项评估：11 维自评（93.3 / A）与风险清单 |
+| [docs/proposal.md](docs/proposal.md) | 立项建议书：目标 · 范围 · 里程碑 · 验收口径 |
+| [docs/migration.md](docs/migration.md) | 迁移指南：映射步骤 · 对齐检查表 · 常见坑 |
+| [docs/security.md](docs/security.md) | 安全说明：威胁模型 · 信任边界 · 已知安全边界 |
 | [docs/TEST_REPORT.md](docs/TEST_REPORT.md) | 测试矩阵 · 变异清单 · 覆盖率基线 · 形式化验证 |
 | [docs/known-gaps.md](docs/known-gaps.md) | 真话台账：已知边界与缺口（诚实记录） |
 | [roadmap.md](roadmap.md) | 里程碑路线与功能面进度（真相源） |
@@ -169,7 +181,7 @@ Architecture follows the **three-layer execution model** (absorbed from posoco):
 git clone https://github.com/walkzzz/agentskills.mbt.git
 cd agentskills.mbt
 moon check --deny-warn        # zero warnings across four targets
-moon test                     # 45/45 (measured 2026-11-19)
+moon test                     # 61/61 (native, 2026-11-24; js 62/62 · wasm/wasm-gc 61/61)
 moon run cli                  # F01 parse → F02 register end-to-end demo
 moon run examples/interconnect_demo   # two-agent interconnect demo (sans-I/O, no network)
 ```
@@ -183,10 +195,11 @@ moon update
 
 ### Quality & verification
 
-- Tests **45/45** (four targets; CI green — check/contract/**prove**/native×3/portable×3/**coverage**)
-- Mutation **24/24 KILLED** (7 domains); coverage: only 3 library lines uncovered ([docs/TEST_REPORT.md](docs/TEST_REPORT.md))
+- Tests **61/61** (native; js 62/62 · wasm / wasm-gc 61/61; CI green — check/contract/**prove**/native×3/portable×3/**coverage**)
+- Mutation **30/30 KILLED** (7 domains); coverage: only 3 library lines uncovered ([docs/TEST_REPORT.md](docs/TEST_REPORT.md))
 - **Formal verification: `verify/proof` `proof_enabled` — moon prove 8 goals proved** (Why3 + Z3: gas ledger `gas_after`, compaction `dropped`, RBAC `allowed` cores)
 - Local CI mirrors `.github/workflows/ci.yml`: `bash scripts/local_ci.sh` (prove via WSL; `--quick` skips slow items)
+- **Browser demo**: `agentskills/playground` (11 non-raising exports) + `docs/` landing page; `node scripts/check_pages.mjs` 123 checks PASS
 
 ### Capabilities & boundaries
 

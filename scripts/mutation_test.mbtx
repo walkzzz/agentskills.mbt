@@ -80,8 +80,8 @@ let mutations : Array[Mutation] = [
   {
     id: "M09",
     file: "agentskills/skill/frontmatter.mbt",
-    old_sub: "String(s) => compatibility = Some([s])",
-    new_sub: "String(_s) => compatibility = Some([])",
+    old_sub: "String(s) => Ok(Some([s]))",
+    new_sub: "String(_s) => Ok(Some([]))",
     desc: "compatibility string branch drops value",
   },
   {
@@ -94,7 +94,7 @@ let mutations : Array[Mutation] = [
   {
     id: "M11",
     file: "agentskills/skill/frontmatter.mbt",
-    old_sub: "body_parts.push(lines[i].to_string())",
+    old_sub: "body_parts.push(lines[i])",
     new_sub: "body_parts.push(\"\")",
     desc: "skill body lost",
   },
@@ -115,15 +115,15 @@ let mutations : Array[Mutation] = [
   {
     id: "M14",
     file: "agentskills/skill/frontmatter.mbt",
-    old_sub: "          _ => ()\n        }",
-    new_sub: "          _ => return Err(\"unknown field\")\n        }",
-    desc: "unknown frontmatter field rejected",
+    old_sub: "_ => Err(\"frontmatter must be a YAML mapping\")",
+    new_sub: "_ => Ok(Map::from_array([]))",
+    desc: "non-mapping frontmatter accepted",
   },
   {
     id: "M15",
     file: "agentskills/rbac/rbac.mbt",
-    old_sub: "rank(max_sensitivity(role)) >= rank(sensitivity)",
-    new_sub: "rank(max_sensitivity(role)) > rank(sensitivity)",
+    old_sub: "max_sensitivity(role).rank() >= sensitivity.rank()",
+    new_sub: "max_sensitivity(role).rank() > sensitivity.rank()",
     desc: "RBAC authorization boundary loosened (>= to >)",
   },
   {
@@ -189,6 +189,48 @@ let mutations : Array[Mutation] = [
     new_sub: "()",
     desc: "rag index add no-op",
   },
+  {
+    id: "M25",
+    file: "agentskills/skill/skill.mbt",
+    old_sub: "self.license is Some(_)",
+    new_sub: "self.license is None",
+    desc: "has_license predicate inverted",
+  },
+  {
+    id: "M26",
+    file: "agentskills/skill/registry.mbt",
+    old_sub: "self.entries[name] = (pair.0, FullyLoaded)",
+    new_sub: "self.entries[name] = (pair.0, Metadata)",
+    desc: "promote keeps Metadata level",
+  },
+  {
+    id: "M27",
+    file: "agentskills/rbac/rbac.mbt",
+    old_sub: "Internal => \"internal\"",
+    new_sub: "Internal => \"int\"",
+    desc: "sensitivity label mutated",
+  },
+  {
+    id: "M28",
+    file: "agentskills/compactor/compactor.mbt",
+    old_sub: "n = n + count_chars(m.content)",
+    new_sub: "n = n + count_chars(m.content) + 1",
+    desc: "total_chars off-by-one",
+  },
+  {
+    id: "M29",
+    file: "agentskills/rag/rag.mbt",
+    old_sub: "let limit = if all.length() < top_n { all.length() } else { top_n }",
+    new_sub: "let limit = all.length()",
+    desc: "rrf_fuse_top ignores top_n bound",
+  },
+  {
+    id: "M30",
+    file: "agentskills/tooling_bridge/adapter.mbt",
+    old_sub: "to_descriptor(t).to_mcp_entry()",
+    new_sub: "to_descriptor(t).to_json()",
+    desc: "MCP entry replaced by wire json view",
+  },
 ]
 
 ///|
@@ -227,6 +269,7 @@ async fn main raise {
     "agentskills/auth/jwt.mbt",
     "agentskills/compactor/compactor.mbt",
     "agentskills/storage/storage.mbt",
+    "agentskills/tooling_bridge/adapter.mbt",
     "verify/verify/known_failure.mbt",
     "verify/verify/fixture_test.mbt",
   ]

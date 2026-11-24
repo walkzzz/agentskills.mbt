@@ -26,15 +26,22 @@ pub(all) struct SkillManifest {
   compatibility : Array[String]?
   metadata : Map[String, @json.Json]?
 }
+pub fn SkillManifest::compatibility_count(Self) -> Int32
+pub fn SkillManifest::has_license(Self) -> Bool
 pub fn SkillManifest::parse(String) -> Result[(Self, String), String]
 
 pub(all) struct SkillRegistry {
   entries : Map[String, (SkillManifest, LoadLevel)]
 }
 pub fn SkillRegistry::count(Self) -> Int32
+pub fn SkillRegistry::is_registered(Self, String) -> Bool
+pub fn SkillRegistry::level_of(Self, String) -> LoadLevel?
 pub fn SkillRegistry::lookup(Self, String) -> (SkillManifest, LoadLevel)?
+pub fn SkillRegistry::names(Self) -> Array[String]
 pub fn SkillRegistry::new() -> Self
+pub fn SkillRegistry::promote(Self, String) -> Result[Unit, String]
 pub fn SkillRegistry::register(Self, SkillManifest, LoadLevel) -> Result[Unit, String]
+pub fn SkillRegistry::unregister(Self, String) -> Result[Unit, String]
 
 // Type aliases
 

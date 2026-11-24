@@ -11,6 +11,8 @@ pub fn[T : SkillTool] register_skill_tool(@tooling.ToolRegistry, T) -> Unit rais
 
 pub fn[T : SkillTool] to_descriptor(T) -> @tooling.ToolDescriptor
 
+pub fn[T : SkillTool] to_mcp_entry(T) -> @json.Json
+
 // Errors
 
 // Types and methods

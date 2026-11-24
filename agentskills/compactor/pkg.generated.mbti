@@ -6,6 +6,8 @@ pub fn compact(Array[Message], keep_recent? : Int32) -> Array[Message]
 
 pub fn fit_budget(Array[Message], max_chars? : Int32) -> Array[Message]
 
+pub fn total_chars(ArrayView[Message]) -> Int32
+
 pub fn truncate_chars(String, Int32) -> String
 
 // Errors

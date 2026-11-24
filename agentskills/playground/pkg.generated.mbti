@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "walkzzz/agentskills.mbt/playground"
+
+// Values
+pub fn compact_demo(String, Int32, Int32) -> String
+
+pub fn rbac_check(String, String) -> Bool
+
+pub fn rbac_matrix() -> String
+
+pub fn registry_demo(String) -> String
+
+pub fn rrf_demo(String, Int32, Int32) -> String
+
+pub fn skill_parse(String) -> String
+
+pub fn skill_validate(String, String, String, String) -> String
+
+pub fn tool_mcp_entry(String, String) -> String
+
+pub fn total_chars(String) -> Int32
+
+pub fn truncate_text(String, Int32) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

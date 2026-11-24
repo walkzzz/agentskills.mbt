@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>agentskills.mbt — SKILL.md 技能运行时 · 浏览器内演示</title>
+  <meta name="description" content="walkzzz/agentskills.mbt：MoonBit 全量移植的 SKILL.md 标准技能运行时 —— F01 解析、F02 注册表、F03 工具单源桥接、F04 BM25+RRF 检索、F05 上下文压缩、F06 RBAC 审计、F07 认证、F08 存储、F09 沙箱、F14 服务端、F15 CLI，并以 WIT 组件对外导出。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="agentskills.mbt — MoonBit SKILL.md 技能运行时" />
+  <meta property="og:description" content="SKILL.md 解析/校验/注册、RRF 融合、RBAC 授权矩阵、Unicode 安全压缩与 MCP 单源映射，全部在浏览器内实时运行。" />
+  <meta property="og:url" content="https://walkzzz.github.io/agentskills.mbt/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a1412'/><path d='M18 44 L18 26 L28 36 L38 26 L38 44' fill='none' stroke='%232dd4bf' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='46' cy='44' r='4' fill='%23a78bfa'/></svg>" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem("agentskills-mbt-theme"); } catch (e) { saved = null; }
+      var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主内容</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">SK</span>
+        <span class="brand-name">agentskills.mbt</span>
+        <span class="brand-ver">v0.2.0</span>
+      </a>
+      <nav class="nav" aria-label="主导航">
+        <a href="#features">能力</a>
+        <a href="#demo">在线演示</a>
+        <a href="#start">快速开始</a>
+        <a href="#api">API</a>
+        <a href="#quality">工程质量</a>
+        <a href="#docs">文档</a>
+      </nav>
+      <div class="topbar-actions">
+        <button id="theme-toggle" class="icon-btn" type="button" title="切换深浅主题" aria-label="切换深浅主题">◐</button>
+        <a class="gh-btn" href="https://github.com/walkzzz/agentskills.mbt" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-text">
+        <p class="eyebrow">MoonBit · SKILL.md Runtime · Kernel 纯函数域</p>
+        <h1>agentskills.mbt</h1>
+        <p class="tagline">SKILL.md 标准技能运行时的 MoonBit 全量移植</p>
+        <p class="sub">
+          F01 解析与校验、F02 渐进加载注册表、F03 GB/Z 185.7 工具单源桥接、F04 BM25+RRF 检索、
+          F05 Unicode 安全压缩、F06 RBAC 三级授权与审计、F07 认证、F08 存储、F09 沙箱、F14 服务端、F15 CLI，
+          并以 WebAssembly Component Model（WIT）对外导出。核心为 Kernel 式纯函数域，IO/时钟/密钥由调用方注入。
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="#demo">立即试用</a>
+          <a class="btn ghost" href="#start">快速开始</a>
+        </div>
+        <ul class="badges" aria-label="项目指标">
+          <li>61 测试（native）</li>
+          <li>62 / 61 / 61 便携目标</li>
+          <li>变异 24 / 24</li>
+          <li>prove 8 goals</li>
+        </ul>
+      </div>
+
+      <div class="hero-card" aria-label="浏览器内 SKILL.md 解析">
+        <div class="hero-card-head">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="dot" aria-hidden="true"></span>
+          <span class="dot" aria-hidden="true"></span>
+          <span class="hero-card-title">playground.js · 解析 → 校验 → 注册</span>
+        </div>
+        <dl class="wasm-stats">
+          <div><dt>技能名</dt><dd id="hero-name">—</dd></div>
+          <div><dt>兼容声明</dt><dd id="hero-compat">—</dd></div>
+          <div><dt>正文字符</dt><dd id="hero-body">—</dd></div>
+        </dl>
+        <pre id="hero-json" class="hero-envelope">正在运行 MoonBit…</pre>
+        <p class="hero-meta"><span id="hero-status">正在运行…</span> · 无后端 · 无第三方请求</p>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-head">
+        <p class="kicker">Capabilities</p>
+        <h2>技能运行时的完整功能面</h2>
+        <p class="lede">Kernel 纯函数域（可跨目标/可在浏览器运行）与运行时壳（IO/进程）严格分离；组合失败即 fail-fast。</p>
+      </div>
+      <div class="feature-grid">
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">01</span><h3>F01 SKILL.md 解析</h3><p>moonyaml frontmatter → SkillManifest；name/description 长度契约校验。</p><code>parse_skill_md · validate</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">02</span><h3>F02 渐进加载注册表</h3><p>Metadata → FullyLoaded 状态机；同名冲突 fail-fast；升格幂等。</p><code>SkillRegistry</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">03</span><h3>F03 工具单源桥接</h3><p>SkillTool → GB/Z 185.7 ToolDescriptor → MCP tools/list 视图。</p><code>to_descriptor · to_mcp_entry</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/performance.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">04</span><h3>F04 混合检索</h3><p>BM25（MoonRetrieve）+ RRF 倒数排名融合；有界返回与全量前缀一致。</p><code>rrf_fuse · rrf_fuse_top</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">05</span><h3>F05 上下文压缩</h3><p>确定性裁剪 + Unicode 安全截断（按 codepoint，多字节不劈开）。</p><code>compact · truncate_chars · total_chars</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/security.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">06</span><h3>F06 RBAC 与审计</h3><p>三级敏感授权矩阵 + 单调审计日志（拒绝计数可观测）。</p><code>can_access · Auditor</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/security.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">07</span><h3>F07 认证</h3><p>bcrypt 口令 + HS256 JWT；不自研密码学。</p><code>password · jwt</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">08</span><h3>F08 存储</h3><p>内存 / JSONL 编解码 / async 文件 IO / PostgreSQL 联测。</p><code>Storage · storage_io · storage_pg</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/known-gaps.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">09</span><h3>F09 沙箱</h3><p>燃料计量契约核 + js WebAssembly 执行器（echo(42)=42）。</p><code>GasMeter · sandbox_js</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">10</span><h3>F14 服务端 API</h3><p>HTTP 契约 + Router + SSE 编码。</p><code>server</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/components/README.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">11</span><h3>WIT 组件导出</h3><p>Component Model 标准接口，任意宿主零胶水调用。</p><code>skill-api</code>
+        </a>
+        <a class="feature" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/TEST_REPORT.md" target="_blank" rel="noreferrer">
+          <span class="feature-no">12</span><h3>质量门禁</h3><p>61 测试（native）/ 62·61·61 便携；24/24 变异；8 goals proved。</p><code>test · mutation · prove</code>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="demo">
+      <div class="section-head">
+        <p class="kicker">Live demo</p>
+        <h2>在浏览器里直接跑</h2>
+        <p class="lede">解析、校验、注册、RBAC 矩阵、压缩、截断、RRF 融合、字符统计与 MCP 条目全部由同一份 MoonBit 编译产物在本地计算；页面不调用后端。</p>
+      </div>
+
+      <div class="demo-grid">
+        <article class="card">
+          <header class="card-head">
+            <h3>SKILL.md 解析</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>skill_parse</code></a>
+          </header>
+          <p class="hint">frontmatter → manifest；输出 name / description / license / compatibility / 正文字符数。</p>
+          <label>SKILL.md 文本
+            <textarea id="skill-md" rows="9" spellcheck="false">---
+name: demo-skill
+description: A demo SKILL.md document
+license: MIT
+compatibility:
+  - moonbit
+  - claude
+---
+
+# Demo
+
+Body content here.</textarea>
+          </label>
+          <div class="row">
+            <button type="button" data-run="parse">解析</button>
+            <button type="button" class="chip-btn" data-preset="bad">非法示例</button>
+          </div>
+          <div id="parse-out" class="out" aria-live="polite">等待解析…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>manifest 校验</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>skill_validate</code></a>
+          </header>
+          <p class="hint">name ≤ 64 字符、description ≤ 1024 字符，二者必填；license/compatibility 可选。</p>
+          <div class="row">
+            <label class="grow">name <input id="v-name" value="demo-skill" /></label>
+          </div>
+          <div class="row">
+            <label class="grow">description <input id="v-desc" value="A demo skill for the runtime" /></label>
+          </div>
+          <div class="row">
+            <label class="grow">license <input id="v-license" value="MIT" /></label>
+          </div>
+          <div class="row">
+            <label class="grow">compatibility（逗号分隔）<input id="v-compat" value="moonbit, claude" /></label>
+          </div>
+          <div class="row">
+            <button type="button" data-run="validate">校验</button>
+            <button type="button" class="chip-btn" data-preset="invalid">空 name 示例</button>
+          </div>
+          <div id="validate-out" class="out" aria-live="polite">等待校验…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>注册表与渐进加载</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>registry_demo</code></a>
+          </header>
+          <p class="hint">按序注册 → 升格首个为 FullyLoaded → 输出 shortlex 名称清单与级别。</p>
+          <div class="row">
+            <label class="grow">技能名（逗号分隔）<input id="reg-names" value="alpha, zeta, beta" /></label>
+            <button type="button" data-run="registry">注册</button>
+          </div>
+          <div id="registry-out" class="out" aria-live="polite">等待注册…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>RBAC 授权矩阵</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/security.md" target="_blank" rel="noreferrer"><code>rbac_matrix · rbac_check</code></a>
+          </header>
+          <p class="hint">3 角色 × 3 敏感度；级别与标签由库内枚举投影。</p>
+          <div class="row">
+            <button type="button" data-run="rbac">生成矩阵</button>
+          </div>
+          <div id="rbac-out" class="out" aria-live="polite">等待生成…</div>
+          <div class="row">
+            <label>role
+              <select id="rbac-role">
+                <option value="viewer">viewer</option>
+                <option value="operator">operator</option>
+                <option value="admin">admin</option>
+              </select>
+            </label>
+            <label>sensitivity
+              <select id="rbac-sens">
+                <option value="public">public</option>
+                <option value="internal">internal</option>
+                <option value="confidential">confidential</option>
+              </select>
+            </label>
+            <button type="button" data-run="rbac-check">判定</button>
+          </div>
+          <div id="rbac-check-out" class="out" aria-live="polite">等待判定…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>上下文压缩</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>compact_demo</code></a>
+          </header>
+          <p class="hint">保留全部 system + 最近 keep_recent 条对话；更早消息折叠为计数占位；逐条按 max_chars 截断。</p>
+          <label>消息 JSON（role/content 数组）
+            <textarea id="msgs" rows="6" spellcheck="false">[
+  {"role":"system","content":"you are a helpful agent"},
+  {"role":"user","content":"first question"},
+  {"role":"user","content":"second question"},
+  {"role":"assistant","content":"first answer"}
+]</textarea>
+          </label>
+          <div class="row">
+            <label>keep_recent <input id="keep" value="2" inputmode="numeric" /></label>
+            <label>max_chars <input id="budget" value="800" inputmode="numeric" /></label>
+            <button type="button" data-run="compact">压缩</button>
+          </div>
+          <div id="compact-out" class="out" aria-live="polite">等待压缩…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>Unicode 安全截断</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>truncate_text</code></a>
+          </header>
+          <p class="hint">按 codepoint 截断，绝不劈开多字节字符；截断时追加省略号。</p>
+          <div class="row">
+            <label class="grow">文本 <input id="trunc-text" value="你好世界，这是一个 Unicode 安全截断示例" /></label>
+            <label>max_chars <input id="trunc-n" value="8" inputmode="numeric" /></label>
+          </div>
+          <div class="row">
+            <button type="button" data-run="truncate">截断</button>
+          </div>
+          <div id="trunc-out" class="out" aria-live="polite">等待截断…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>RRF 融合</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/performance.md" target="_blank" rel="noreferrer"><code>rrf_demo</code></a>
+          </header>
+          <p class="hint">多路排名 → Σ 1/(k+rank)；分数降序，同分按 doc_id 升序 tie-break；top_n 为全量前缀。</p>
+          <label>rankings JSON
+            <textarea id="rankings" rows="5" spellcheck="false">[
+  ["skill-parse", "skill-registry", "skill-rbac"],
+  ["skill-registry", "skill-compact"],
+  ["skill-parse", "skill-rbac"]
+]</textarea>
+          </label>
+          <div class="row">
+            <label>k <input id="rrf-k" value="60" inputmode="numeric" /></label>
+            <label>top_n <input id="rrf-top" value="5" inputmode="numeric" /></label>
+            <button type="button" data-run="rrf">融合</button>
+          </div>
+          <div id="rrf-out" class="out" aria-live="polite">等待融合…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>工具 MCP 条目</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>tool_mcp_entry</code></a>
+          </header>
+          <p class="hint">SkillTool → ToolDescriptor → MCP tools/list 条目（name / description / inputSchema）。</p>
+          <div class="row">
+            <label class="grow">工具名 <input id="tool-name" value="net_fetch" /></label>
+            <label class="grow">描述 <input id="tool-desc" value="Fetch a URL" /></label>
+          </div>
+          <div class="row">
+            <button type="button" data-run="tool">生成条目</button>
+          </div>
+          <div id="tool-out" class="out" aria-live="polite">等待生成…</div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>字符预算统计</h3>
+            <a class="pkg-link" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><code>total_chars</code></a>
+          </header>
+          <p class="hint">按 codepoint 汇总内容字符数（与 truncate_chars 同口径），用于预算诊断。</p>
+          <label>消息 JSON
+            <textarea id="chars-json" rows="4" spellcheck="false">[{"role":"user","content":"你好"},{"role":"assistant","content":"🙂🙂"}]</textarea>
+          </label>
+          <div class="row">
+            <button type="button" data-run="chars">统计</button>
+          </div>
+          <div id="chars-out" class="out" aria-live="polite">等待统计…</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="start">
+      <div class="section-head">
+        <p class="kicker">Get started</p>
+        <h2>workspace 双成员，零隐藏状态</h2>
+        <p class="lede">Kernel 纯函数域直接可用；IO 与进程隔离在运行时壳（cli/server/examples）。</p>
+      </div>
+      <div class="start-grid">
+        <div class="start-col">
+          <div class="code">
+            <div class="code-head"><span>安装</span><button type="button" class="copy" data-copy-target="cmd-install">复制</button></div>
+            <pre id="cmd-install"><code>moon add walkzzz/agentskills.mbt@0.2.0
+moon update</code></pre>
+          </div>
+          <div class="code">
+            <div class="code-head"><span>工程门禁</span><button type="button" class="copy" data-copy-target="cmd-gates">复制</button></div>
+            <pre id="cmd-gates"><code>moon check --deny-warn --target all
+moon test  --target native
+moon test  --target js
+moon run scripts/mutation_test.mbtx
+node scripts/check_pages.mjs</code></pre>
+          </div>
+          <div class="code">
+            <div class="code-head"><span>浏览器演示产物</span><button type="button" class="copy" data-copy-target="cmd-build">复制</button></div>
+            <pre id="cmd-build"><code>moon build --target js --release agentskills/playground
+node scripts/serve_pages.mjs</code></pre>
+          </div>
+        </div>
+        <div class="start-col">
+          <div class="code">
+            <div class="code-head"><span>解析 → 校验 → 注册</span><button type="button" class="copy" data-copy-target="code-flow">复制</button></div>
+            <pre id="code-flow"><code>let (manifest, body) =
+  @skill.parse_skill_md(skill_md).unwrap()
+
+@skill.validate(manifest)      // Ok(()) 或 Err(reason)
+manifest.has_license()
+manifest.compatibility_count()
+
+let registry = @skill.SkillRegistry::new()
+registry.register(manifest, @skill.Metadata)
+registry.promote(manifest.name)
+registry.names()               // shortlex 确定性顺序</code></pre>
+          </div>
+          <div class="code">
+            <div class="code-head"><span>检索与压缩</span><button type="button" class="copy" data-copy-target="code-rag">复制</button></div>
+            <pre id="code-rag"><code>let hits = @rag.rrf_fuse(rankings, k=60)
+let top  = @rag.rrf_fuse_top(rankings, k=60, top_n=5)
+
+let compacted = @compactor.compact(msgs, keep_recent=8)
+let fitted    = @compactor.fit_budget(compacted, max_chars=800)
+let chars     = @compactor.total_chars(fitted[:])</code></pre>
+          </div>
+          <div class="code">
+            <div class="code-head"><span>授权与工具</span><button type="button" class="copy" data-copy-target="code-rbac">复制</button></div>
+            <pre id="code-rbac"><code>@rbac.can_access(@rbac.Admin, @rbac.Confidential)  // true
+@rbac.max_sensitivity(@rbac.Operator).label()      // "internal"
+
+let auditor = @rbac.Auditor::new()
+auditor.record("agent-a", "read", true)
+auditor.denied_count()
+
+@tooling_bridge.to_mcp_entry(tool)   // MCP tools/list 单源条目</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="api">
+      <div class="section-head">
+        <p class="kicker">API map</p>
+        <h2>能力与入口</h2>
+        <p class="lede">完整签名见 <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md">架构文档</a> 与各包 <code>pkg.generated.mbti</code>。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>能力</th><th>入口</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>SKILL.md 解析（F01）</td><td><code>parse_skill_md</code> · <code>SkillManifest::parse</code></td><td>frontmatter → manifest + 正文</td></tr>
+            <tr><td>manifest 校验</td><td><code>validate</code></td><td>name ≤64 / description ≤1024</td></tr>
+            <tr><td>manifest 谓词</td><td><code>has_license</code> · <code>compatibility_count</code></td><td>可选字段投影</td></tr>
+            <tr><td>注册（F02）</td><td><code>SkillRegistry::register</code> · <code>lookup</code></td><td>validate 先行；重名 fail-fast</td></tr>
+            <tr><td>渐进加载</td><td><code>promote</code> · <code>level_of</code> · <code>is_registered</code></td><td>Metadata → FullyLoaded</td></tr>
+            <tr><td>注册表观测</td><td><code>names</code> · <code>count</code> · <code>unregister</code></td><td>shortlex 确定性清单</td></tr>
+            <tr><td>工具桥接（F03）</td><td><code>to_descriptor</code> · <code>to_mcp_entry</code></td><td>GB/Z 185.7 单源映射</td></tr>
+            <tr><td>混合检索（F04）</td><td><code>rrf_fuse</code> · <code>rrf_fuse_top</code></td><td>RRF；同分 doc_id 升序</td></tr>
+            <tr><td>检索索引</td><td><code>RagIndex::add / search / is_empty</code></td><td>BM25（MoonRetrieve）</td></tr>
+            <tr><td>压缩（F05）</td><td><code>compact</code> · <code>fit_budget</code> · <code>truncate_chars</code></td><td>确定性裁剪 + Unicode 安全</td></tr>
+            <tr><td>预算诊断</td><td><code>total_chars</code></td><td>按 codepoint 计数</td></tr>
+            <tr><td>授权（F06）</td><td><code>can_access</code> · <code>Role::rank</code> · <code>Sensitivity::label</code></td><td>三级敏感静态策略</td></tr>
+            <tr><td>审计</td><td><code>Auditor::record</code> · <code>denied_count</code> · <code>last</code></td><td>单调 seq 日志</td></tr>
+            <tr><td>认证（F07）</td><td><code>password / jwt</code> 子包</td><td>bcrypt + HS256</td></tr>
+            <tr><td>存储（F08）</td><td><code>Storage</code> · <code>storage_io</code> · <code>storage_pg</code></td><td>内存 / JSONL / PG</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="quality">
+      <div class="section-head">
+        <p class="kicker">Quality gates</p>
+        <h2>数字可复算</h2>
+        <p class="lede">四目标严格模式零警告；测试、变异与形式化均有明确口径，数字附实测日期。</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><strong>61</strong><span>测试（native）</span></div>
+        <div class="stat"><strong>62 / 61 / 61</strong><span>js / wasm / wasm-gc</span></div>
+        <div class="stat"><strong>24 / 24</strong><span>变异点 KILLED</span></div>
+        <div class="stat"><strong>8</strong><span>goals proved</span></div>
+        <div class="stat"><strong>19</strong><span>包（17 主模块 + 2 verify）</span></div>
+        <div class="stat"><strong>11</strong><span>演示导出</span></div>
+        <div class="stat"><strong>42</strong><span>上游差分 fixtures</span></div>
+        <div class="stat"><strong>WIT</strong><span>Component Model 导出</span></div>
+      </div>
+      <div class="quality-notes">
+        <p><strong>测试口径</strong>：native 61/61；js 62/62（含 js-only 执行器）；wasm / wasm-gc 各 61/61（2026-11-24 实测）。</p>
+        <p><strong>变异与证明</strong>：24/24 KILLED（7 功能域）；<code>verify/proof</code> 8 goals proved（Why3 + Z3：燃料账本 / 占位计数 / RBAC 授权）。</p>
+        <p><strong>Kernel 纯函数域</strong>：<code>skill/rag/rbac/compactor/storage</code> 无 IO、无时钟、无全局状态；可在 js / wasm 直接运行（本页即证）。</p>
+        <p><strong>演示口径</strong>：页面所有结果来自 <code>agentskills/playground</code> 的 11 个非 raise 导出，与库同一份源码。</p>
+      </div>
+    </section>
+
+    <section class="section" id="docs">
+      <div class="section-head">
+        <p class="kicker">Documentation</p>
+        <h2>继续深入</h2>
+        <p class="lede">架构、性能、对比、评估、迁移、安全与真话台账都写在仓库里。</p>
+      </div>
+      <div class="doc-grid">
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/architecture.md"><h3>架构设计</h3><p>三层执行模型、包边界与依赖方向。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/performance.md"><h3>性能报告</h3><p>基准、复杂度与 RRF 有界返回。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/comparison.md"><h3>方案对比</h3><p>与上游仓颉实现、手写运行时的差异。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/assessment.md"><h3>立项评估</h3><p>11 维自评与风险清单。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/proposal.md"><h3>立项建议书</h3><p>目标、范围、里程碑与验收口径。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/migration.md"><h3>迁移指南</h3><p>从上游/手写运行时迁入的步骤。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/security.md"><h3>安全说明</h3><p>威胁模型、凭证与沙箱边界。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/known-gaps.md"><h3>已知边界</h3><p>真话台账：平台限制与未实现项。</p></a>
+        <a class="doc-card" href="https://github.com/walkzzz/agentskills.mbt/blob/main/docs/TEST_REPORT.md"><h3>测试报告</h3><p>测试矩阵、变异、覆盖与证明。</p></a>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-head">
+        <p class="kicker">Under the hood</p>
+        <h2>这是怎么在浏览器里跑的？</h2>
+      </div>
+      <ol class="steps">
+        <li><span class="step-no">1</span><p><code>agentskills/playground</code> 是主模块的 <code>foreign_library</code> 包，用 <code>#export_name</code> 导出 11 个非 raise 包装函数（错误折叠为 <code>{"ok":false}</code> / false / -1）。</p></li>
+        <li><span class="step-no">2</span><p><code>moon build --target js --release agentskills/playground</code> 生成一份 JS；同一份源码也可构建为 <code>wasm-gc</code> / <code>native</code>。</p></li>
+        <li><span class="step-no">3</span><p>页面直接 <code>import</code> 并调用：解析、校验、注册、RBAC、压缩、截断、RRF、字符统计与 MCP 条目全部在本地完成。</p></li>
+        <li><span class="step-no">4</span><p>语义由 61 项测试、24 点变异矩阵与 8 条证明义务守护；<code>check_pages.mjs</code> 验证导出与语义，Pages 部署 <code>docs/</code>。</p></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand"><span class="brand-mark small">SK</span> agentskills.mbt · MIT · SKILL.md 运行时 · GB/Z 185-2026 联动</p>
+      <nav class="footer-links" aria-label="页脚导航">
+        <a href="https://github.com/walkzzz/agentskills.mbt" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://mooncakes.io/docs/walkzzz/agentskills.mbt" target="_blank" rel="noreferrer">mooncakes</a>
+        <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">变更日志</a>
+        <a href="https://github.com/walkzzz/agentskills.mbt/blob/main/CONTRIBUTING.md" target="_blank" rel="noreferrer">参与贡献</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

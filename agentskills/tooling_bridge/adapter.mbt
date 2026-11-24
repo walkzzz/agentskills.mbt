@@ -24,6 +24,14 @@ pub fn[T : SkillTool] to_descriptor(t : T) -> @tooling.ToolDescriptor {
 }
 
 ///|
+///to_mcp_entry — 技能工具 → MCP tools/list 条目（GB/Z 185.7 单源映射的 MCP 视图）。
+///
+///En: to_mcp_entry maps a SkillTool to the MCP tools/list entry (single-source view).
+pub fn[T : SkillTool] to_mcp_entry(t : T) -> Json {
+  to_descriptor(t).to_mcp_entry()
+}
+
+///|
 ///register_skill_tool — 将技能工具桥入国标 ToolRegistry（闭包 handler 翻译
 ///Json → ToolOutcome：execute 结果包 Completed；失败语义由技能实现内嵌 Json 表达）。
 pub fn[T : SkillTool] register_skill_tool(

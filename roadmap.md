@@ -10,12 +10,23 @@
 
 ---
 
-## 一、当前进度快照（2026-11-17，正式开工日 2026-11-23 之前）
+## 一、当前进度快照（2026-11-24，0.2.0 立项增强完成）
 
 | 状态 | 图例 |
 | --- | --- |
 | ✅ 已完成 | 🔵 提前完成（超出排期） |
 | 🔶 部分完成 | ⬜ 未开始（按 DEV 65 日排期推进） |
+
+### 0.2.0 立项增强（2026-11-24）
+
+| 项 | 结果 |
+| --- | --- |
+| API | +12：manifest 谓词、注册表查询/升格/注销、RBAC rank/label、审计 denied/last、`total_chars`、`RagIndex::is_empty`、`rrf_fuse_top`、`to_mcp_entry` |
+| 测试 | native 61/61；js 62/62；wasm / wasm-gc 61/61 |
+| 变异 | **30/30 KILLED**（7 功能域） |
+| 证明 | 8 goals proved（未改动证明函数） |
+| 演示 | `agentskills/playground` 11 导出 + `docs/` 库首页；`check_pages` 123 项 PASS；CDP E2E 17 项 PASS |
+| 文档 | 七篇立项文档 + 工程文档 23 份同步 |
 
 ### 已完成
 
@@ -141,6 +152,7 @@
 | --- | --- | --- |
 | agentskills.mbt 0.1.0 | **2026-11-19（已发布 mooncakes）** | 27/27 测试 + deny-warn + 变异 14/14 + repo_stats 绿（提前于 M2 排期，发布 Server status 200） |
 | agentskills.mbt 0.1.1 | **2026-11-19（发布预备就绪，待 walkzzz 执行 moon publish）** | 45/45（native）/ 46/46（js）+ deny-warn 四目标 + 变异 24/24 + 覆盖率基线 + prove 8 goals + CI 11/11 全绿 + repo_stats 绿（增量：F08 PostgreSQL / F09 js 执行器 / Component Model / 惯用化重构） |
+| agentskills.mbt 0.2.0 | **2026-11-24（发布预备就绪，待 walkzzz 执行 moon publish）** | 61/61（native）/ 62/62（js）/ 61/61（wasm·wasm-gc）+ deny-warn 四目标 + 变异 **30/30** + prove 8 goals + check_pages **123** + CDP E2E 17（增量：12 API / 11 演示导出 / 库首页 / 七篇立项文档） |
 | agentskills.mbt 1.0.0 | 2027-02-19 | 门禁终跑 + 对照矩阵 100%（M3） |
 
 （原 bcrypt/bm25/pg/wasm3 四条库发布行随自研计划撤销删除，2026-11-18。）

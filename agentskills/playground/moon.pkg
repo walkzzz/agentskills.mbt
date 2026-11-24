@@ -1,0 +1,10 @@
+import {
+  "moonbitlang/core/json",
+  "walkzzz/agentskills.mbt/skill",
+  "walkzzz/agentskills.mbt/rag",
+  "walkzzz/agentskills.mbt/rbac",
+  "walkzzz/agentskills.mbt/compactor",
+  "walkzzz/agentskills.mbt/tooling_bridge",
+}
+
+pkgtype(kind: "foreign_library")

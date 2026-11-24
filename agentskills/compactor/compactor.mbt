@@ -89,3 +89,15 @@ pub fn fit_budget(
   }
   out
 }
+
+///|
+///total_chars — 消息内容字符总数（预算诊断；按 codepoint 计数，与 truncate_chars 同口径）。
+///
+///En: total_chars sums message content by codepoint count (same basis as truncate_chars).
+pub fn total_chars(msgs : ArrayView[Message]) -> Int32 {
+  let mut n = 0
+  for m in msgs {
+    n = n + count_chars(m.content)
+  }
+  n
+}

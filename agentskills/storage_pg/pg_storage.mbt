@@ -84,7 +84,9 @@ pub async fn kv_get(pool : @pgpool.Pool, k : String) -> String? {
 ///|
 ///kv_delete — 删除（存在则 true）。
 pub async fn kv_delete(pool : @pgpool.Pool, k : String) -> Bool {
-  let rows = pool.query_all("DELETE FROM agentskills_kv WHERE " + kv_where(k) + " RETURNING k")
+  let rows = pool.query_all(
+    "DELETE FROM agentskills_kv WHERE " + kv_where(k) + " RETURNING k",
+  )
   rows.length() > 0
 }
 

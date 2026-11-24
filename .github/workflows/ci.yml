@@ -33,6 +33,10 @@ jobs:
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep
           bash scripts/repo_stats.sh
+      - name: Pages gate (structure / hooks / 11 exports / semantics)
+        run: |
+          moon build --target js --release agentskills/playground
+          node scripts/check_pages.mjs
 
   contract:
     name: .mbti contract drift check

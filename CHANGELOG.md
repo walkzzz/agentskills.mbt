@@ -3,6 +3,43 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/) 与 [语义化版本](https://semver.org/)。
 数字口径：测试与功能状态以仓库实测为准（native，日期标注）。
 
+## [0.2.0] - 2026-11-24
+
+### Added — API（12 项，纯增量）
+
+- `skill`：`SkillManifest::has_license` / `compatibility_count`；`SkillRegistry::is_registered` / `level_of` / `names`（shortlex 确定性顺序）/ `promote`（Metadata → FullyLoaded，幂等）/ `unregister`（未注册 Err）。
+- `rbac`：`Role::rank` / `Sensitivity::rank` / `Sensitivity::label`；`Auditor::denied_count` / `last`。
+- `compactor`：`total_chars`（按 codepoint，与 `truncate_chars` 同口径）。
+- `rag`：`RagIndex::is_empty`；`rrf_fuse_top`（`rrf_fuse` 的精确前缀，有界返回）。
+- `tooling_bridge`：`to_mcp_entry`（SkillTool → MCP tools/list 单源条目）。
+
+### Added — 浏览器演示与页面
+
+- `agentskills/playground`（`foreign_library`，11 个非 raise 导出）：`skill_parse` / `skill_validate` / `registry_demo` / `rbac_matrix` / `rbac_check` / `compact_demo` / `truncate_text` / `rrf_demo` / `total_chars` / `tool_mcp_entry`。
+- `docs/` 改为库首页范式：`index.html`（sticky 导航 / Hero 实时解析 / 12 能力卡 / 9 演示卡 / 深浅主题 / Open Graph / 响应式）+ `style.css` + `app.js`；删除 Jekyll `index.md`（内容并入静态页）。
+- `scripts/check_pages.mjs`（123 项：结构 / 钩子 / 11 导出 / 技能运行时语义 / 版本口径）；`scripts/serve_pages.mjs` 本地预览。
+
+### Added — 文档
+
+- 七篇立项文档：`docs/architecture.md`、`performance.md`、`comparison.md`、`assessment.md`、`proposal.md`、`migration.md`、`security.md`。
+- 工程文档 `AgentSkillsMBT-工程文档/` 同步（Charter / TRP / TCA / API / ARCH / DDD / ITR / 一致性报告 / 总览）。
+
+### Changed
+
+- `can_access` 内部改用 `max_sensitivity(role).rank() >= sensitivity.rank()`（语义不变，枚举 rank 方法化）。
+- `moon fmt` 修正 `frontmatter.mbt` 与 `pg_storage.mbt` 的格式与文件末尾换行。
+
+### Quality（2026-11-24 实测）
+
+- 测试：native **61/61**；js **62/62**；wasm / wasm-gc 各 **61/61**。
+- 变异：**30/30 KILLED**（24 → 30；修正 M09/M11/M14 因格式化失效的 old_sub）。
+- 形式化：8 goals proved（未改动证明函数）。
+- 页面门禁：**123 项 PASS**；CDP 真实浏览器 E2E 17 项 PASS（本地）。
+
+### Fixed
+
+- 明确排序语义：MoonBit `Compare for String` 为 shortlex（长度优先），`SkillRegistry::names` 断言可区分「已排序」与「插入顺序」。
+
 ## [0.1.1] - 2026-11-19
 
 ### Added

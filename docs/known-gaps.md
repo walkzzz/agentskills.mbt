@@ -1,6 +1,6 @@
 # 已知边界与缺口（真话台账）
 
-> 维护者人工维护的诚实台账：记录已知缺口与平台边界，避免"宣传面与事实面漂移"。
+> 维护者人工维护的诚实台账：记录已知缺口与平台边界，避免「宣传面与事实面漂移」。
 > README 只描述能力；本文件描述边界。评审/集成前请先读此页。
 
 ## 功能边界
@@ -8,21 +8,32 @@
 | 编号 | 描述 | 影响面 | 状态/规避 |
 | --- | --- | --- | --- |
 | GAP-1 | CLI 无 argv（moon run 不传命令行参数——moon-cross 实测工具链限制） | F15 CLI 子命令面（skill load/run/build） | 子命令经环境变量/内嵌演示剧本过渡；argv 方案随 @process 集成裁决 |
-| GAP-2 | ~~文件系统读未接入~~ **已闭环（2026-11-19）** | F02 文件加载、CLI 读 SKILL.md | ✅ F08 JSONL IO wrapper 落地（async save/load + demo 往返 OK）；**async@0.22.9 接入后 native 37/37 全绿、无 MSVC C1189**（此前基于 .tmp-smoke 的 C1189 结论不适用于本仓依赖组合） |
-| GAP-3 | 差分样本 **42/40 达成**（FIXTURE_TARGET=40，2026-11-19 冻结上游全量 42 个 SKILL.md） | D2 差分层覆盖度 | ✅ 已闭环：实测期望独立于 F01 生成；8 个块标量样本 description 用空哨兵（字符级期望不可独立冻结，只断言 name/license）；**BUG-001 登记**：UP-019（investment-research-assistant）frontmatter 被 moonyaml 拒绝、上游接受——known_failure 隔离待裁决 |
-| GAP-4 | F02 渐进加载的 Metadata→FullyLoaded 升格路径未接文件消费（GAP-2 闭环后前提已具备） | F02 完整面 | LoadLevel 状态机就位；升格接 `load_jsonl`/文件读随 CLI skill load 子命令落地 |
-| GAP-5 | F03 MCP 面（to_mcp_entry 的 server 侧暴露）未实现 | F03 完整面 | W9 mcp 家族集成时落地；单源映射已通（gbz185 ToolRegistry 桥接） |
-| GAP-7 | F09 执行器覆盖：wasmoon 完整集成 = **编译器级依赖链**（wasmoon + milkir + wasmoon_jit + wasm_milkir 四模块，2026-11-19 侦察确认） | F09 三执行器（wasm 沙箱实际执行） | 三执行器策略：①**js WebAssembly ✅ 已落地**（`sandbox_js`，js-only；echo(42)=42 实测；js 执行器**不做逐指令燃料计量**——WebAssembly 无 gas 钩子，gas≤0 判 OutOfGas，精确计量归 wasmoon）②@process 进程隔离 ③wasmoon JIT 完整集成随 W10 排期 |
-| GAP-8 | F08 PG 后端与同步 `Storage` trait 的接口差：PG 全 async（pgpool），trait 为同步契约（内存/文件） | 存储后端统一性 | `storage_pg` 提供 **async 独立 API**（`with_pg_storage` + kv_*，联测绿），**不硬套同步 trait**；运行时壳统一注入时为 trait 增加 async 变体（或适配层）。SQL 值经单引号转义拼接（联测用途；参数化准备语句留后续）。联测通道：`moon build` + 直接执行 exe（沙箱对 `moon run` 有网络拦截） |
+| GAP-2 | ~~文件系统读未接入~~ **已闭环（2026-11-19）** | F02 文件加载、CLI 读 SKILL.md | ✅ F08 JSONL IO wrapper 落地（async save/load + demo 往返 OK） |
+| GAP-3 | 差分样本 **42/40 达成**（FIXTURE_TARGET=40，上游全量 42 个 SKILL.md 冻结） | D2 差分层覆盖度 | ✅ 已闭环；**BUG-001 登记**：UP-019（investment-research-assistant）frontmatter 被 moonyaml 拒绝、上游接受——known_failure 隔离待裁决 |
+| GAP-4 | ~~Metadata→FullyLoaded 升格路径未接文件消费~~ **部分闭环（0.2.0）**：新增 `promote` / `level_of` 显式 API 与测试；正文消费仍属运行时壳 | F02 完整面 | 状态机与升格 API 就位；CLI skill load 子命令落地后接文件消费 |
+| GAP-5 | F03 MCP 面（server 侧暴露）未实现 | F03 完整面 | 0.2.0 已补 `to_mcp_entry`（MCP tools/list 单源条目）；**server 侧注册/路由**随 W9 mcp 家族落地 |
+| GAP-7 | F09 执行器覆盖：wasmoon 完整集成 = 编译器级依赖链 | F09 三执行器 | ①js WebAssembly ✅；②@process 进程隔离 ⬜；③wasmoon JIT 随 W10 |
+| GAP-8 | F08 PG 后端与同步 `Storage` trait 的接口差 | 存储后端统一性 | `storage_pg` 提供 async 独立 API（`with_pg_storage` + kv_*）；**SQL 值当前单引号转义拼接（联测用途）**，参数化准备语句留后续 |
+| GAP-9 | 排序语义：MoonBit `Compare for String` 为 **shortlex（长度优先）** | `SkillRegistry::names` 等确定性清单 | 文档明示；同长度按字典序；需要严格字典序请自定义比较（0.2.0 已在测试中锁定该语义） |
 
 ## 平台与工具链
 
 | 编号 | 描述 | 影响面 | 状态/规避 |
 | --- | --- | --- | --- |
-| GAP-6 | gbz185.mbt Windows 本地 `moon prove` 触发 moon 工具链 `\\?` mkdir bug（EACCES/EINVAL） | 国标形式化验证的本地运行 | WSL 通道 **20 obligations proved / 13 verified functions**（2026-11-19 三档扩展）；CI 走 ubuntu runner（详见 gbz185 仓 docs/known-gaps.md GAP-1） |
+| GAP-6 | gbz185.mbt Windows 本地 `moon prove` 触发 moon 工具链 `\\?` mkdir bug（EACCES/EINVAL） | 国标形式化验证的本地运行 | WSL 通道 **20 obligations proved / 13 verified functions**；CI 走 ubuntu runner |
 
-## 测试口径
+## 演示与页面
 
-- **45/45 为 native 目标实测**（2026-11-19）：skill/rag/auth/rbac/compactor/storage/sandbox/server 全包覆盖（含 6 个 quickcheck 属性、差分层 42 fixtures、JSONL 往返、RBAC 矩阵、HS256、沙箱燃料、HTTP 路由/SSE 编码、frontmatter 错误分支）；js / wasm / wasm-gc 与 native×3 OS 经 CI 实测绿。
-- 变异测试 **24/24 KILLED**（7 功能域，scripts/mutation_test.mbtx）；覆盖率 `moon coverage analyze` 库代码仅 3 行未覆盖（WSL 通道——Windows 本地有路径拼接 bug）；**形式化验证 `verify/proof` 8 goals proved**（moon prove/WSL；契约核：燃料账本/占位计数/RBAC 授权）；数字一致性门禁 `scripts/repo_stats.sh`；本地 CI `scripts/local_ci.sh` 与 CI jobs 对齐；完整矩阵见 docs/TEST_REPORT.md。
-- `examples/storage_jsonl_demo` 与 `examples/interconnect_demo` 为运行级验证（moon run 实测输出见 README）。
+| 编号 | 描述 | 影响面 | 状态/规避 |
+| --- | --- | --- | --- |
+| GAP-10 | 演示层（`playground` / `cli` / `examples`）不计入覆盖率与核心质量口径 | 覆盖率数字解读 | 文档与 TEST_REPORT 明示；核心 Kernel 包单独计 |
+| GAP-11 | `docs/index.md` 已删除（Jekyll 页面并入静态 `index.html`）；`_config.yml` 保留但不依赖主题 | Pages 渲染方式 | 静态页为事实源；本地预览 `node scripts/serve_pages.mjs` |
+
+## 测试口径（2026-11-24 实测）
+
+- 测试：**native 61/61**；**js 62/62**（含 js-only 执行器）；**wasm / wasm-gc 各 61/61**。
+- 变异：**30/30 KILLED**（7 功能域，`scripts/mutation_test.mbtx`）。
+- 覆盖率：`moon coverage analyze` + `report -f full_summary`（WSL 通道，2026-11-24）——**核心 424/433 = 97.9%**，未覆盖 9 行（jsonl 2 / frontmatter 4 / compactor 3）；`cli`/`playground`/`examples`/`proof` 不计入（GAP-10）。
+- 形式化：`verify/proof` **8 goals proved**（moon prove / WSL Z3 4.8.12）。
+- 页面：`node scripts/check_pages.mjs` **123 项 PASS**；CDP E2E **17 项 PASS**（本地）。
+- 数字一致性门禁：`scripts/repo_stats.sh`；本地 CI `scripts/local_ci.sh` 与 `.github/workflows/ci.yml` 对齐。

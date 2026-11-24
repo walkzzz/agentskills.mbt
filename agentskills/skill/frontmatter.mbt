@@ -50,7 +50,13 @@ pub fn parse_skill_md(text : String) -> Result[(SkillManifest, String), String] 
     Ok(v) => v
     Err(e) => return Err(e)
   }
-  let manifest : SkillManifest = { name, description, license, compatibility, metadata }
+  let manifest : SkillManifest = {
+    name,
+    description,
+    license,
+    compatibility,
+    metadata,
+  }
   match validate(manifest) {
     Ok(_) => ()
     Err(e) => return Err(e)
@@ -92,7 +98,7 @@ fn field_of(fields : Map[String, Json], name : String) -> Json? {
 ///string_field — 文本字段（缺失 → None；类型错 → Err）。
 fn string_field(
   fields : Map[String, Json],
-  name : String
+  name : String,
 ) -> Result[String?, String] {
   match field_of(fields, name) {
     None => Ok(None)
@@ -108,7 +114,7 @@ fn string_field(
 ///strings_field — 字符串列表字段（兼容字符串标量 → 单元素；缺失 → None）。
 fn strings_field(
   fields : Map[String, Json],
-  name : String
+  name : String,
 ) -> Result[Array[String]?, String] {
   match field_of(fields, name) {
     None => Ok(None)
@@ -134,7 +140,7 @@ fn strings_field(
 ///map_field — 映射字段（原始 Json 值保留；缺失 → None）。
 fn map_field(
   fields : Map[String, Json],
-  name : String
+  name : String,
 ) -> Result[Map[String, Json]?, String] {
   match field_of(fields, name) {
     None => Ok(None)
@@ -156,7 +162,7 @@ fn map_field(
 ///|
 ///SkillManifest::parse — parse_skill_md 的方法化入口（Type::fn 惯用形式，与函数等价）。
 pub fn SkillManifest::parse(
-  text : String
+  text : String,
 ) -> Result[(SkillManifest, String), String] {
   parse_skill_md(text)
 }

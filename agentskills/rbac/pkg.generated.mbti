@@ -21,6 +21,8 @@ pub struct Auditor {
   records : Array[AuditRecord]
 }
 pub fn Auditor::count(Self) -> Int32
+pub fn Auditor::denied_count(Self) -> Int32
+pub fn Auditor::last(Self) -> AuditRecord?
 pub fn Auditor::log(Self) -> Array[AuditRecord]
 pub fn Auditor::new() -> Self
 pub fn Auditor::record(Self, String, String, Bool) -> AuditRecord
@@ -30,12 +32,15 @@ pub(all) enum Role {
   Operator
   Admin
 }
+pub fn Role::rank(Self) -> Int32
 
 pub(all) enum Sensitivity {
   Public
   Internal
   Confidential
 }
+pub fn Sensitivity::label(Self) -> String
+pub fn Sensitivity::rank(Self) -> Int32
 
 // Type aliases
 

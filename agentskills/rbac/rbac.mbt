@@ -26,8 +26,23 @@ pub fn max_sensitivity(role : Role) -> Sensitivity {
 }
 
 ///|
-fn rank(s : Sensitivity) -> Int32 {
-  match s {
+///Role::rank — 角色级别（Viewer=0 / Operator=1 / Admin=2；比较与展示用）。
+///
+///En: Role::rank exposes the numeric level of a role.
+pub fn Role::rank(self : Role) -> Int32 {
+  match self {
+    Viewer => 0
+    Operator => 1
+    Admin => 2
+  }
+}
+
+///|
+///Sensitivity::rank — 敏感度级别（Public=0 / Internal=1 / Confidential=2）。
+///
+///En: Sensitivity::rank exposes the numeric level of a sensitivity class.
+pub fn Sensitivity::rank(self : Sensitivity) -> Int32 {
+  match self {
     Public => 0
     Internal => 1
     Confidential => 2
@@ -35,9 +50,21 @@ fn rank(s : Sensitivity) -> Int32 {
 }
 
 ///|
+///Sensitivity::label — 敏感度的稳定文本标签（审计/UI 用）。
+///
+///En: Sensitivity::label returns a stable textual label.
+pub fn Sensitivity::label(self : Sensitivity) -> String {
+  match self {
+    Public => "public"
+    Internal => "internal"
+    Confidential => "confidential"
+  }
+}
+
+///|
 ///can_access — 授权判定：role 对 sensitivity 的访问权（纯函数，可属性测试）。
 pub fn can_access(role : Role, sensitivity : Sensitivity) -> Bool {
-  rank(max_sensitivity(role)) >= rank(sensitivity)
+  max_sensitivity(role).rank() >= sensitivity.rank()
 }
 
 ///|
@@ -85,4 +112,31 @@ pub fn Auditor::log(self : Self) -> Array[AuditRecord] {
 ///count — 事件数。
 pub fn Auditor::count(self : Self) -> Int32 {
   self.records.length()
+}
+
+///|
+///denied_count — 被拒绝事件数（审计观测面：授权失败统计）。
+///
+///En: denied_count counts rejected authorization events.
+pub fn Auditor::denied_count(self : Self) -> Int32 {
+  let mut n = 0
+  for r in self.records {
+    if !r.allowed {
+      n = n + 1
+    }
+  }
+  n
+}
+
+///|
+///last — 最近一条审计事件（空日志返回 None）。
+///
+///En: last returns the most recent audit record, if any.
+pub fn Auditor::last(self : Self) -> AuditRecord? {
+  let size = self.records.length()
+  if size == 0 {
+    None
+  } else {
+    Some(self.records[size - 1])
+  }
 }

@@ -29,3 +29,22 @@ pub fn validate(m : SkillManifest) -> Result[Unit, String] {
     Ok(())
   }
 }
+
+///|
+///has_license — 是否声明 license（可选字段的谓词投影）。
+///
+///En: has_license projects the optional license field.
+pub fn SkillManifest::has_license(self : SkillManifest) -> Bool {
+  self.license is Some(_)
+}
+
+///|
+///compatibility_count — 兼容性声明条目数（缺省视为 0）。
+///
+///En: compatibility_count reports the number of compatibility entries (absent → 0).
+pub fn SkillManifest::compatibility_count(self : SkillManifest) -> Int32 {
+  match self.compatibility {
+    Some(items) => items.length()
+    None => 0
+  }
+}
